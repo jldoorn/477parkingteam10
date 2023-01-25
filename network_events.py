@@ -21,6 +21,9 @@ def parse_report(data_in: bytes):
         seq_num, direction = struct.unpack('>BB', data_in[2:4])
         return CarFlowEvent(serial_number, seq_num, direction)
 
+def generate_report(serial, sequence, direction):
+    return struct.pack('>BBBB', serial, 2, sequence, direction)
+
 if __name__ == "__main__":
     print(parse_report(struct.pack('>BBBB', 12, 2, 4, 1)))
     print(parse_report(struct.pack('>BBBB', 10, 2, 199, 0)))

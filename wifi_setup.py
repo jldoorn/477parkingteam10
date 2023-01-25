@@ -67,18 +67,42 @@ def write_flush_getline(port: serial.Serial, to_write: bytes) -> bytes :
 
 def test_comport(port: serial.Serial):
 #    assert write_flush_getline(port, b'AT\r\n') ==  b'OK\r\n'
-    print(write_flush_getline(port, b'AT\r\n'))
+    port.write(b'AT\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'OK')
 
 def set_soft_ap(port: serial.Serial):
-    write_flush_getline(port, b'AT+CWMODE=2\r\n')
+    port.write(b'AT+CWMODE=2\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'OK')
 
 def set_wifi_link(port, ssid, password):
-    write_flush_getline(port, b'AT+CWSAP="' + bytes(ssid, "ascii") + b'","' + bytes(password, "ascii") + b'",5,3\r\n')
+    port.write(b'AT+CWSAP="' + bytes(ssid, "ascii") + b'","' + bytes(password, "ascii") + b'",5,3\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'OK')
 
-def listen_for_udp(port):
-    write_flush_getline(port, b'AT+CIPMUX=1\r\n')
-    write_flush_getline(port, b'AT+CIPSTART=0,"UDP","0.0.0.0",4445,4445,2\r\n')
+def listen_for_udp(port, udpport):
+    port.write(b'AT+CIPMUX=1\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'OK')
 
+    port.write(b'AT+CIPSTART=0,"UDP","0.0.0.0",' + str(udpport).encode("ascii") + b','+str(udpport).encode("ascii") + b',2\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'OK')
+
+def send_to_udp(ser_port, ip_addr, port, data_out):
+    ser_port.write(b'AT+CIPSEND=' + str(len(data_out)).encode("ascii") + b',"' + ip_addr.encode("ascii") + b'",' + str(port).encode("ascii") + b'\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'>')
+
+    ser_port.write(data_out)
+    out = read_esp(ser_port)
+    assert out[-1].startswith(b'SEND OK')
+
+def join_ap(port, ssid, password):
+    port.write(b'AT+CWJAP="' + ssid.encode("ascii") + b'","' + password.encode("ascii"), + b'"\r\n')
+    out = read_esp(port)
+    assert out[-1].startswith(b'OK')
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -89,6 +113,6 @@ if __name__ == "__main__":
     test_comport(port)
     set_soft_ap(port)
     set_wifi_link(port, "myap", "012345678")
-    listen_for_udp(port)
+    listen_for_udp(port, 8080)
     while True:
         print(port.readline())
