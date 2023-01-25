@@ -8,7 +8,7 @@ if len(sys.argv) != 3:
     raise ValueError("Pass 2 arguments!")
 
 ip_addr = sys.argv[1]
-port = sys.argv[2]
+port = int(sys.argv[2])
 
 send_data(ip_addr, port, generate_report(3, 4, 0))
 time.sleep(2)

@@ -3,6 +3,7 @@ import serial
 import os
 import sys
 import typing
+import time
 
 class ESPEvent:
 
@@ -19,7 +20,9 @@ class ESPPacket(ESPEvent):
 def read_esp(port: serial.Serial) -> typing.List[bytes]:
     out = []
     while port.in_waiting > 0:
-        out.append(port.readline())
+        port.flush()
+        l = port.read(port.in_waiting).split(b"\r\n")
+        out.extend([b for b in l if b != b''])
 
     return out
 
@@ -33,6 +36,7 @@ def parse_esp_output(output: typing.List[bytes]):
     parsed = []
     for line in output:
         if line.startswith(b'+IPD'): # incomming data!
+            print("incomming data", line)
             msg_parts = line.split(b':')
             msg_len = int(msg_parts[0].split(b',')[-1])
 
@@ -68,34 +72,41 @@ def write_flush_getline(port: serial.Serial, to_write: bytes) -> bytes :
 def test_comport(port: serial.Serial):
 #    assert write_flush_getline(port, b'AT\r\n') ==  b'OK\r\n'
     port.write(b'AT\r\n')
+    time.sleep(0.1)
     out = read_esp(port)
     assert out[-1].startswith(b'OK')
 
 def set_soft_ap(port: serial.Serial):
     port.write(b'AT+CWMODE=2\r\n')
+    time.sleep(0.1)
     out = read_esp(port)
     assert out[-1].startswith(b'OK')
 
 def set_wifi_link(port, ssid, password):
     port.write(b'AT+CWSAP="' + bytes(ssid, "ascii") + b'","' + bytes(password, "ascii") + b'",5,3\r\n')
+    time.sleep(0.5)
     out = read_esp(port)
     assert out[-1].startswith(b'OK')
 
 def listen_for_udp(port, udpport):
     port.write(b'AT+CIPMUX=1\r\n')
+    time.sleep(0.1)
     out = read_esp(port)
     assert out[-1].startswith(b'OK')
 
     port.write(b'AT+CIPSTART=0,"UDP","0.0.0.0",' + str(udpport).encode("ascii") + b','+str(udpport).encode("ascii") + b',2\r\n')
+    time.sleep(0.1)
     out = read_esp(port)
     assert out[-1].startswith(b'OK')
 
 def send_to_udp(ser_port, ip_addr, port, data_out):
     ser_port.write(b'AT+CIPSEND=' + str(len(data_out)).encode("ascii") + b',"' + ip_addr.encode("ascii") + b'",' + str(port).encode("ascii") + b'\r\n')
+    time.sleep(0.1)
     out = read_esp(port)
     assert out[-1].startswith(b'>')
 
     ser_port.write(data_out)
+    time.sleep(0.1)
     out = read_esp(ser_port)
     assert out[-1].startswith(b'SEND OK')
 
