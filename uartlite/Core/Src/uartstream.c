@@ -46,3 +46,19 @@ int rx_line_blocking(USART_TypeDef * usartx, char * buff, int max_rx) {
 }
 
 
+void putcharusart(char c, USART_TypeDef * usartx) {
+	while (!LL_USART_IsActiveFlag_TXE(usartx)) {}
+	usartx->TDR = c;
+}
+
+void writestring(char * str, USART_TypeDef * usartx) {
+	while (*str) {
+		putcharusart(*str++, usartx);
+	}
+}
+
+char getcharusart(USART_TypeDef * usartx) {
+	while (!LL_USART_IsActiveFlag_RXNE(usartx)){}
+	return usartx->RDR;
+}
+

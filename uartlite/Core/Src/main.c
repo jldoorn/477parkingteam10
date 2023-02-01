@@ -22,6 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "fifo.h"
+#include "esp.h"
+#include "string.h"
+#include "uartstream.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,21 +62,6 @@ static void MX_USART7_UART_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void putcharusart(char c, USART_TypeDef * usartx) {
-	while (!LL_USART_IsActiveFlag_TXE(usartx)) {}
-	usartx->TDR = c;
-}
-
-void writestring(char * str, USART_TypeDef * usartx) {
-	while (*str) {
-		putcharusart(*str++, usartx);
-	}
-}
-
-char getcharusart(USART_TypeDef * usartx) {
-	while (!LL_USART_IsActiveFlag_RXNE(usartx)){}
-	return usartx->RDR;
-}
 
 int __io_putchar(int c){
 	while (!LL_USART_IsActiveFlag_TXE(USART5)) {}
@@ -91,6 +79,7 @@ int __io_putchar(int c){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
 
   /* USER CODE END 1 */
 
@@ -128,6 +117,30 @@ int main(void)
   int count;
   char temp;
 
+  sprintf(mainbuff, "Trying to disable echo\r\n");
+  	  writestring(mainbuff, USART5);
+
+  esp_disable_echo();
+
+  if (esp_check_status(&usart7_rx_fifo) != 1) {
+	  sprintf(mainbuff, "failed to disable the echo\r\n");
+	  writestring(mainbuff, USART5);
+  } else {
+	  sprintf(mainbuff, "successfully disabled the echo\r\n");
+	  	  writestring(mainbuff, USART5);
+  }
+
+  esp_set_station();
+  if (esp_check_status(&usart7_rx_fifo) != 1) {
+  	  sprintf(mainbuff, "failed to set station\r\n");
+  	  writestring(mainbuff, USART5);
+    } else {
+  	  sprintf(mainbuff, "successfully set station mode\r\n");
+  	  	  writestring(mainbuff, USART5);
+    }
+
+  esp_broadcast_net("myap477", "012345678");
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,14 +152,14 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-	  if (!fifo_empty(&usart7_rx_fifo)) {
-	  		  fifo_pop(&usart7_rx_fifo, &temp);
-	  		  putcharusart(temp, USART5);
-	  	  }
-	  	  if (!fifo_empty(&usart5_rx_fifo)) {
-	  	  		  fifo_pop(&usart5_rx_fifo, &temp);
-	  	  		  putcharusart(temp, USART7);
-	  	  	  }
+//	  if (!fifo_empty(&usart7_rx_fifo)) {
+//	  		  fifo_pop(&usart7_rx_fifo, &temp);
+//	  		  putcharusart(temp, USART5);
+//	  	  }
+//	  	  if (!fifo_empty(&usart5_rx_fifo)) {
+//	  	  		  fifo_pop(&usart5_rx_fifo, &temp);
+//	  	  		  putcharusart(temp, USART7);
+//	  	  	  }
   }
   /* USER CODE END 3 */
 }
