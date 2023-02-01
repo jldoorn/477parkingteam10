@@ -126,6 +126,7 @@ int main(void)
 
   char mainbuff[50] = {0};
   int count;
+  char temp;
 
   /* USER CODE END 2 */
 
@@ -134,15 +135,18 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  while (fifo_empty(&usart5_rx_fifo));
-//	  count = fifo_read_until(&usart5_rx_fifo, mainbuff, '\n', 50);
-	  count = fifo_read_n(&usart5_rx_fifo, mainbuff, 10);
-//	  putcharusart(getcharusart(USART5), USART5);
 
-	  for (int i = 0; i < count; i++) {
-		  putcharusart(mainbuff[i], USART5);
-	  }
+
     /* USER CODE BEGIN 3 */
+
+	  if (!fifo_empty(&usart7_rx_fifo)) {
+	  		  fifo_pop(&usart7_rx_fifo, &temp);
+	  		  putcharusart(temp, USART5);
+	  	  }
+	  	  if (!fifo_empty(&usart5_rx_fifo)) {
+	  	  		  fifo_pop(&usart5_rx_fifo, &temp);
+	  	  		  putcharusart(temp, USART7);
+	  	  	  }
   }
   /* USER CODE END 3 */
 }
