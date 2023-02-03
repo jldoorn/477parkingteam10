@@ -113,11 +113,22 @@ int main(void)
   LL_USART_EnableIT_RXNE(USART5);
   LL_USART_EnableIT_RXNE(USART7);
   /* USER CODE BEGIN 2 */
+  esp_handle_t esp_handle;
+  esp_handle.debug = USART5;
+  esp_handle.fifo = &usart7_rx_fifo;
+  esp_handle.usartx = USART7;
 
 
-  setup_esp(&usart7_rx_fifo, USART7, USART5);
-  char tmp;
-
+  setup_esp(&esp_handle);
+//  esp_setup_join("myapteam10", "012345678", &usart7_rx_fifo, USART7, USART5);
+//  char tmp;
+//  writestring("Connect success!!\r\n", USART5);
+//
+//  esp_init_udp_station("192.168.0.1", 8080, &usart7_rx_fifo, USART7, USART5);
+//
+//  esp_send_data("Hello World\r\n", strlen("Hello World\r\n"), USART7, &usart7_rx_fifo, USART5, 0);
+//  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
+//  writestring("Send success!!\r\n", USART5);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -125,15 +136,16 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+//	  esp_send_data("Hello World\r\n", strlen("Hello World\r\n"), USART7, &usart7_rx_fifo, USART5, 0);
+//	    while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
 
 //	  flush_fifo_to_usart(&usart7_rx_fifo, USART5);
-	  if (esp_debug_response(&usart7_rx_fifo, USART5) == ESP_DATA) {
-		  writestring("Main: Got ESP Data\r\n", USART5);
-		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
-		  esp_send_data(esp_incoming.buffer, esp_incoming.count, USART7, &usart7_rx_fifo, USART5);
-		  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
-	  }
+//	  if (esp_debug_response(&usart7_rx_fifo, USART5) == ESP_DATA) {
+//		  writestring("Main: Got ESP Data\r\n", USART5);
+//		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
+//		  esp_send_data(esp_incoming.buffer, esp_incoming.count, USART7, &usart7_rx_fifo, USART5);
+//		  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
+//	  }
 
 
     /* USER CODE BEGIN 3 */
