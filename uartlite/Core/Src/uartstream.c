@@ -57,6 +57,13 @@ void writestring(char * str, USART_TypeDef * usartx) {
 	}
 }
 
+void usart_write_n(char * str, int n, USART_TypeDef * usartx) {
+	int i;
+	for (i = 0; i < n; i++) {
+		putcharusart(*str++, usartx);
+	}
+}
+
 char getcharusart(USART_TypeDef * usartx) {
 	while (!LL_USART_IsActiveFlag_RXNE(usartx)){}
 	return usartx->RDR;

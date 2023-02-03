@@ -5,6 +5,7 @@
  *      Author: jdoorn
  */
 #include "fifo.h"
+#include "stm32f091xc.h"
 
 #ifndef INC_ESP_H_
 #define INC_ESP_H_
@@ -25,12 +26,13 @@ typedef struct {
 		esp_data_response_t esp_data_header;
 	} body;
 } esp_response_t;
-
-void esp_disable_echo();
-int esp_check_status(fifo_t * fifo);
-
-void esp_set_station();
-
-void esp_broadcast_net(char * ssid, char * pass);
+int setup_esp(fifo_t *fifo, USART_TypeDef *usartx, USART_TypeDef *debug);
+void esp_debug_response(fifo_t *fifo, USART_TypeDef * debug);
+//void esp_disable_echo();
+//int esp_check_status(fifo_t * fifo);
+//
+//void esp_set_station();
+//
+//void esp_broadcast_net(char * ssid, char * pass);
 
 #endif /* INC_ESP_H_ */

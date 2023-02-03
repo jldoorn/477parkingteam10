@@ -69,3 +69,9 @@ int fifo_read_n(fifo_t * fifo, char * buffer, int size) {
 	return count;
 
 }
+
+void fifo_block_empty(fifo_t * fifo) {
+	while (fifo_empty(fifo)) {
+				asm volatile ("wfi"); // wait for an interrupt
+			}
+}

@@ -113,33 +113,8 @@ int main(void)
   LL_USART_EnableIT_RXNE(USART7);
   /* USER CODE BEGIN 2 */
 
-  char mainbuff[50] = {0};
-  int count;
-  char temp;
 
-  sprintf(mainbuff, "Trying to disable echo\r\n");
-  	  writestring(mainbuff, USART5);
-
-  esp_disable_echo();
-
-  if (esp_check_status(&usart7_rx_fifo) != 1) {
-	  sprintf(mainbuff, "failed to disable the echo\r\n");
-	  writestring(mainbuff, USART5);
-  } else {
-	  sprintf(mainbuff, "successfully disabled the echo\r\n");
-	  	  writestring(mainbuff, USART5);
-  }
-
-  esp_set_station();
-  if (esp_check_status(&usart7_rx_fifo) != 1) {
-  	  sprintf(mainbuff, "failed to set station\r\n");
-  	  writestring(mainbuff, USART5);
-    } else {
-  	  sprintf(mainbuff, "successfully set station mode\r\n");
-  	  	  writestring(mainbuff, USART5);
-    }
-
-  esp_broadcast_net("myap477", "012345678");
+  setup_esp(&usart7_rx_fifo, USART7, USART5);
 
   /* USER CODE END 2 */
 
@@ -152,14 +127,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-//	  if (!fifo_empty(&usart7_rx_fifo)) {
-//	  		  fifo_pop(&usart7_rx_fifo, &temp);
-//	  		  putcharusart(temp, USART5);
-//	  	  }
-//	  	  if (!fifo_empty(&usart5_rx_fifo)) {
-//	  	  		  fifo_pop(&usart5_rx_fifo, &temp);
-//	  	  		  putcharusart(temp, USART7);
-//	  	  	  }
+	  esp_debug_response(&usart7_rx_fifo, USART5);
   }
   /* USER CODE END 3 */
 }

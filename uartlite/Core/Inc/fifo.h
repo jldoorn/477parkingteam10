@@ -24,5 +24,8 @@ int fifo_full(fifo_t * fifo);
 int fifo_empty(fifo_t * fifo);
 int fifo_read_until(fifo_t * fifo, char * buffer, char term, int size);
 int fifo_read_n(fifo_t * fifo, char * buffer, int size);
+char fifo_peak(fifo_t * fifo);
+void fifo_block_empty(fifo_t * fifo);
+
 
 #endif /* INC_FIFO_H_ */

@@ -22,6 +22,7 @@ int rx_line_blocking(USART_TypeDef * usartx, char * buff, int max_rx);
 void putcharusart(char c, USART_TypeDef * usartx) ;
 
 void writestring(char * str, USART_TypeDef * usartx) ;
+void usart_write_n(char * str, int n, USART_TypeDef * usartx);
 
 char getcharusart(USART_TypeDef * usartx);
 
