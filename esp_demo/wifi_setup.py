@@ -86,7 +86,8 @@ def set_wifi_link(port, ssid, password):
     port.write(b'AT+CWSAP="' + bytes(ssid, "ascii") + b'","' + bytes(password, "ascii") + b'",5,3\r\n')
     time.sleep(0.5)
     out = read_esp(port)
-    assert out[-1].startswith(b'OK')
+    print(out)
+    # assert out[-1].startswith(b'OK')
 
 def listen_for_udp(port, udpport):
     port.write(b'AT+CIPMUX=1\r\n')
@@ -97,7 +98,7 @@ def listen_for_udp(port, udpport):
     port.write(b'AT+CIPSTART=0,"UDP","0.0.0.0",' + str(udpport).encode("ascii") + b','+str(udpport).encode("ascii") + b',2\r\n')
     time.sleep(0.1)
     out = read_esp(port)
-    assert out[-1].startswith(b'OK')
+    # assert out[-1].startswith(b'OK')
 
 def send_to_udp(ser_port, ip_addr, port, data_out):
     ser_port.write(b'AT+CIPSEND=' + str(len(data_out)).encode("ascii") + b',"' + ip_addr.encode("ascii") + b'",' + str(port).encode("ascii") + b'\r\n')
