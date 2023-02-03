@@ -32,6 +32,7 @@
 fifo_t usart5_rx_fifo = {0};
 fifo_t usart7_rx_fifo = {0};
 
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -115,6 +116,7 @@ int main(void)
 
 
   setup_esp(&usart7_rx_fifo, USART7, USART5);
+  char tmp;
 
   /* USER CODE END 2 */
 
@@ -125,9 +127,18 @@ int main(void)
     /* USER CODE END WHILE */
 
 
+//	  flush_fifo_to_usart(&usart7_rx_fifo, USART5);
+	  if (esp_debug_response(&usart7_rx_fifo, USART5) == ESP_DATA) {
+		  writestring("Main: Got ESP Data\r\n", USART5);
+		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
+		  esp_send_data(esp_incoming.buffer, esp_incoming.count, USART7, &usart7_rx_fifo, USART5);
+		  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
+	  }
+
+
     /* USER CODE BEGIN 3 */
 
-	  esp_debug_response(&usart7_rx_fifo, USART5);
+//	  esp_debug_response(&usart7_rx_fifo, USART5);
   }
   /* USER CODE END 3 */
 }

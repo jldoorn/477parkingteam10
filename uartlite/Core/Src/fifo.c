@@ -6,7 +6,7 @@
  */
 
 #include "fifo.h"
-
+#include "uartstream.h"
 
 void fifo_put(fifo_t * fifo, char c) {
 	if (!fifo_full(fifo)) {
@@ -36,6 +36,14 @@ int fifo_empty(fifo_t * fifo) {
 
 char fifo_peak(fifo_t * fifo) {
 	return fifo->buffer[fifo->tail];
+}
+
+void flush_fifo_to_usart(fifo_t *fifo, USART_TypeDef *usart) {
+	char tmp;
+	while (!fifo_empty(fifo)) {
+				  fifo_pop(&usart7_rx_fifo, &tmp);
+				  putcharusart(tmp, usart);
+			  }
 }
 
 int fifo_read_until(fifo_t * fifo, char * buffer, char term, int size) {
