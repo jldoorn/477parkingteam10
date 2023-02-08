@@ -84,15 +84,16 @@ void esp_reset(USART_TypeDef *usartx) {
  * @return zero if setup successful
  */
 int setup_esp(esp_handle_t * esp) {
-	flush_fifo_to_usart(esp->fifo, esp->usartx);
+	flush_fifo_to_usart(esp->fifo, esp->debug);
+	writestring("resetting esp\r\n", esp->debug);
 	esp_reset(esp->usartx);
 	while (esp_debug_response(esp) != ESP_READY)
 		;
-
+	writestring("disabling echo\r\n", esp->debug);
 	esp_disable_echo(esp->usartx);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
-
+	writestring("setting ap mode\r\n", esp->debug);
 	esp_set_mode(esp->usartx, ESP_MODE_AP);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
@@ -119,7 +120,7 @@ void esp_join_ap(USART_TypeDef *usartx, char *ssid, char *pw) {
 }
 
 void esp_setup_join(char *ssid, char *pw, esp_handle_t * esp) {
-	flush_fifo_to_usart(esp->fifo, esp->usartx);
+	flush_fifo_to_usart(esp->fifo, esp->debug);
 	esp_reset(esp->usartx);
 	while (esp_debug_response(esp) != ESP_READY)
 		;
@@ -170,10 +171,22 @@ esp_response_enum esp_debug_response(esp_handle_t * esp) {
 	switch (fifo_peak(esp->fifo)) {
 	case '+': // incoming update
 		buffer_offset = fifo_read_until(esp->fifo, debug_buffer, ':', 100);
+		usart_write_n(debug_buffer, buffer_offset % 1024,
+								esp->debug);
 		if (strnstr(debug_buffer, "+IPD", 100)) {
-			sscanf(debug_buffer, "+IPD,%d,%d:", &link_id, &ipd_data_count);
-			sprintf(esp_buffer, "Packet in on link %d with length %d\r\n",
-					link_id, ipd_data_count);
+
+#ifdef ESP_STA
+			sscanf(debug_buffer, "+IPD,%d:",&ipd_data_count);
+						sprintf(esp_buffer, "Packet in on station with length %d\r\n",
+								ipd_data_count);
+#endif
+
+#ifdef ESP_AP
+						sscanf(debug_buffer, "+IPD,%d,%d:",&link_id, &ipd_data_count);
+												sprintf(esp_buffer, "Packet in on AP with length %d\r\n",
+														ipd_data_count);
+#endif
+
 			writestring(esp_buffer, esp->debug);
 			writestring("Incoming packet data>", esp->debug);
 			esp_incoming.count = ipd_data_count;

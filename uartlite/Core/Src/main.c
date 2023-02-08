@@ -37,6 +37,8 @@ fifo_t usart7_rx_fifo = {0};
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -118,17 +120,26 @@ int main(void)
   esp_handle.fifo = &usart7_rx_fifo;
   esp_handle.usartx = USART7;
 
+  int str_length = 0;
+  char charbuff[1024] = {0};
 
+#ifdef ESP_AP
+  	writestring("Startinig init routine\r\n", USART5);
   setup_esp(&esp_handle);
-//  esp_setup_join("myapteam10", "012345678", &usart7_rx_fifo, USART7, USART5);
-//  char tmp;
-//  writestring("Connect success!!\r\n", USART5);
-//
-//  esp_init_udp_station("192.168.0.1", 8080, &usart7_rx_fifo, USART7, USART5);
-//
-//  esp_send_data("Hello World\r\n", strlen("Hello World\r\n"), USART7, &usart7_rx_fifo, USART5, 0);
-//  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
-//  writestring("Send success!!\r\n", USART5);
+
+#endif
+
+#ifdef ESP_STA
+    esp_setup_join("myap", "12345678", &esp_handle);
+    char tmp;
+    writestring("Connect success!!\r\n", USART5);
+    esp_init_udp_station("192.168.4.1", 8080,  &esp_handle);
+
+    esp_send_data("Hello World\r\n", strlen("Hello World\r\n"),  &esp_handle, 0);
+    while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
+    writestring("Send success!!\r\n", USART5);
+#endif
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -140,12 +151,26 @@ int main(void)
 //	    while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
 
 //	  flush_fifo_to_usart(&usart7_rx_fifo, USART5);
-//	  if (esp_debug_response(&usart7_rx_fifo, USART5) == ESP_DATA) {
-//		  writestring("Main: Got ESP Data\r\n", USART5);
-//		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
+
+	  if ((!fifo_empty(esp_handle.fifo)) && (esp_debug_response(&esp_handle) == ESP_DATA)) {
+		  writestring("Main: Got ESP Data\r\n", USART5);
+		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
 //		  esp_send_data(esp_incoming.buffer, esp_incoming.count, USART7, &usart7_rx_fifo, USART5);
 //		  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
-//	  }
+	  }
+
+	  if (!fifo_empty(&usart5_rx_fifo)) {
+		  // got a line to send
+		  str_length = fifo_read_until(&usart5_rx_fifo, charbuff, '\n', 1024);
+#ifdef ESP_AP
+		  esp_send_data(charbuff, str_length, &esp_handle, 1);
+#endif
+#ifdef ESP_STA
+		  esp_send_data(charbuff, str_length, &esp_handle, 0);
+#endif
+		  while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
+		  writestring("Send success!!\r\n", USART5);
+	  }
 
 
     /* USER CODE BEGIN 3 */

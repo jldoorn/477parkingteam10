@@ -15,6 +15,8 @@
 #define ESP_MUX_SINGLE		0
 #define ESP_MUX_MULTI		1
 
+#define ESP_STA
+
 
 typedef enum {ESP_STATUS, ESP_DATA, ESP_RESULTS, ESP_READY, ESP_PARSE_FAIL, ESP_OK, ESP_ERROR, ESP_SEND_OK, ESP_SEND_FAIL, ESP_SET_OK} esp_response_enum;
 //typedef enum {ESP_OK, ESP_ERROR, ESP_SEND_OK, ESP_SEND_FAIL, ESP_SET_OK} esp_status_enum;
