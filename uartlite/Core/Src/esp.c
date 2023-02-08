@@ -75,6 +75,11 @@ void esp_reset(USART_TypeDef *usartx) {
 	writestring("AT+RST\r\n", usartx);
 }
 
+void esp_gateway_ip_set(char *gateway_ip, USART_TypeDef *usartx) {
+	sprintf(esp_buffer, "AT+CIPAP=\"%s\"\r\n", gateway_ip);
+	writestring(esp_buffer, usartx);
+}
+
 /**
  * Configures the ESP in station mode and opens port to receive UDP packets
  *
@@ -83,7 +88,7 @@ void esp_reset(USART_TypeDef *usartx) {
  * @param debug	a pointer to the USART that the debug messages should be sent to
  * @return zero if setup successful
  */
-int setup_esp(esp_handle_t * esp) {
+int setup_esp(esp_handle_t *esp, char *ssid, char *pwd, char *gateway_ip) {
 	flush_fifo_to_usart(esp->fifo, esp->debug);
 	writestring("resetting esp\r\n", esp->debug);
 	esp_reset(esp->usartx);
@@ -98,7 +103,11 @@ int setup_esp(esp_handle_t * esp) {
 	while (esp_debug_response(esp) != ESP_OK)
 		;
 
-	esp_broadcast_net("myap", "12345678", esp->usartx);
+	esp_gateway_ip_set(gateway_ip, esp->usartx);
+	while (esp_debug_response(esp) != ESP_OK)
+		;
+
+	esp_broadcast_net(ssid, pwd, esp->usartx);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
 
@@ -119,7 +128,7 @@ void esp_join_ap(USART_TypeDef *usartx, char *ssid, char *pw) {
 	writestring(esp_buffer, usartx);
 }
 
-void esp_setup_join(char *ssid, char *pw, esp_handle_t * esp) {
+void esp_setup_join(char *ssid, char *pw, esp_handle_t *esp) {
 	flush_fifo_to_usart(esp->fifo, esp->debug);
 	esp_reset(esp->usartx);
 	while (esp_debug_response(esp) != ESP_READY)
@@ -142,7 +151,7 @@ void esp_udp_single_conn(USART_TypeDef *usartx, char *ip_conn, int port) {
 	writestring(esp_buffer, usartx);
 }
 
-void esp_init_udp_station(char *ip_conn, int port, esp_handle_t * esp) {
+void esp_init_udp_station(char *ip_conn, int port, esp_handle_t *esp) {
 	esp_multiplex_set(esp->usartx, ESP_MUX_SINGLE);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
@@ -162,7 +171,7 @@ void esp_init_udp_station(char *ip_conn, int port, esp_handle_t * esp) {
  * @param debug	a pointer to the USART that the debug messages should be sent to
  * @return The status if any of the ESP message
  */
-esp_response_enum esp_debug_response(esp_handle_t * esp) {
+esp_response_enum esp_debug_response(esp_handle_t *esp) {
 	int buffer_offset;
 	int ipd_data_count;
 	int link_id;
@@ -171,8 +180,7 @@ esp_response_enum esp_debug_response(esp_handle_t * esp) {
 	switch (fifo_peak(esp->fifo)) {
 	case '+': // incoming update
 		buffer_offset = fifo_read_until(esp->fifo, debug_buffer, ':', 100);
-		usart_write_n(debug_buffer, buffer_offset % 1024,
-								esp->debug);
+		usart_write_n(debug_buffer, buffer_offset % 1024, esp->debug);
 		if (strnstr(debug_buffer, "+IPD", 100)) {
 
 #ifdef ESP_STA
@@ -182,16 +190,17 @@ esp_response_enum esp_debug_response(esp_handle_t * esp) {
 #endif
 
 #ifdef ESP_AP
-						sscanf(debug_buffer, "+IPD,%d,%d:",&link_id, &ipd_data_count);
-												sprintf(esp_buffer, "Packet in on AP with length %d\r\n",
-														ipd_data_count);
+			sscanf(debug_buffer, "+IPD,%d,%d:", &link_id, &ipd_data_count);
+			sprintf(esp_buffer, "Packet in on AP with length %d\r\n",
+					ipd_data_count);
 #endif
 
 			writestring(esp_buffer, esp->debug);
 			writestring("Incoming packet data>", esp->debug);
 			esp_incoming.count = ipd_data_count;
 			while (ipd_data_count > 0) {
-				fifo_read_n(esp->fifo, esp_incoming.buffer, ipd_data_count % 1024);
+				fifo_read_n(esp->fifo, esp_incoming.buffer,
+						ipd_data_count % 1024);
 				usart_write_n(esp_incoming.buffer, ipd_data_count % 1024,
 						esp->debug);
 				ipd_data_count -= (ipd_data_count % 1024);
@@ -231,10 +240,8 @@ esp_response_enum esp_debug_response(esp_handle_t * esp) {
 	return ESP_STATUS;
 }
 
-void esp_send_data(char *buf, int n, esp_handle_t * esp, int multi) {
+void esp_send_data(char *buf, int n, esp_handle_t *esp, int multi) {
 	char tmp = 0;
-	int cnt = 0;
-	char tbuff[50];
 	if (multi) {
 		esp_send_mux_init(n, esp->usartx);
 	} else {
@@ -247,48 +254,7 @@ void esp_send_data(char *buf, int n, esp_handle_t * esp, int multi) {
 		}
 	}
 	usart_write_n(buf, n, esp->usartx);
-//	cnt = fifo_read_until(fifo, esp_buffer, '\n', 1024);
-//	while (cnt < strlen("Recv bytes")) {
-//		cnt = fifo_read_until(fifo, esp_buffer, '\n', 1024);
-//	}
-//	sprintf(tbuff, "Recv %d bytes", n);
-//	if (!strnstr(esp_buffer, tbuff, cnt)) {
-//		writestring("Send failed\r\n", debug);
-//		return;
-//	}
-//	while (cnt < strlen("SEND OK")) {
-//			cnt = fifo_read_until(fifo, esp_buffer, '\n', 1024);
-//		}
-//	if (!strnstr(esp_buffer, "SEND OK", cnt)) {
-//			writestring("Send failed\r\n", debug);
-//			return;
-//		}
-//		writestring("send succeed\r\n", debug);
+
 }
 
-//esp_response_t * _get_status_response(fifo_t * fifo) {
-////	esp_response_enum resp_enum;
-////	esp_status_enum status_enum;
-////	for (;;) {
-////		fifo_read_until(fifo, esp_buffer, '\n', 1024);
-////		if strnstr(esp_buffer, "ready") {
-////			resp_enum = ESP_
-////		}
-////	}
-//}
-
-//esp_response_t * get_response(fifo_t * fifo) {
-//
-//	while (fifo_empty(fifo));
-//
-//	switch (fifo_peak(fifo)) {
-//		case '+':
-//			return get_extended_response(fifo);
-//			break;
-//		default:
-//			return _get_status_response(fifo);
-//			break;
-//	}
-//
-//}
 

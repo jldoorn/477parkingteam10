@@ -15,7 +15,7 @@
 #define ESP_MUX_SINGLE		0
 #define ESP_MUX_MULTI		1
 
-#define ESP_STA
+#define ESP_AP
 
 
 typedef enum {ESP_STATUS, ESP_DATA, ESP_RESULTS, ESP_READY, ESP_PARSE_FAIL, ESP_OK, ESP_ERROR, ESP_SEND_OK, ESP_SEND_FAIL, ESP_SET_OK} esp_response_enum;
@@ -39,7 +39,7 @@ typedef struct {
 //		esp_data_response_t esp_data_header;
 //	} body;
 //} esp_response_t;
-int setup_esp(esp_handle_t * esp);
+int setup_esp(esp_handle_t * esp, char * ssid, char * pwd, char * gateway_ip);
 esp_response_enum esp_debug_response(esp_handle_t * esp);
 void esp_send_data(char * buf, int n, esp_handle_t * esp, int multi) ;
 void esp_setup_join(char * ssid, char * pw, esp_handle_t * esp) ;

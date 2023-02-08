@@ -125,7 +125,7 @@ int main(void)
 
 #ifdef ESP_AP
   	writestring("Startinig init routine\r\n", USART5);
-  setup_esp(&esp_handle);
+  setup_esp(&esp_handle, "myap", "12345678", "192.168.0.1");
 
 #endif
 
@@ -133,7 +133,7 @@ int main(void)
     esp_setup_join("myap", "12345678", &esp_handle);
     char tmp;
     writestring("Connect success!!\r\n", USART5);
-    esp_init_udp_station("192.168.4.1", 8080,  &esp_handle);
+    esp_init_udp_station("192.168.0.1", 8080,  &esp_handle);
 
     esp_send_data("Hello World\r\n", strlen("Hello World\r\n"),  &esp_handle, 0);
     while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
