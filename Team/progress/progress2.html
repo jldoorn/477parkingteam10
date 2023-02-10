@@ -60,7 +60,7 @@ contact course staff.
 			<ul>
 				<li>Prepared demo of bidirectional messaging between two STM32F0 microcontrollers</li>
 				<li>Modified wifi driver to be more stable and require less codebase tweaking for install.</li>
-				<li>Planned for week 7 demo goals</li>
+				<li>Planned for week 6 demo goals</li>
 			</ul>
 			<h5>Reporting efforts</h5>
 			<ul>
@@ -68,51 +68,30 @@ contact course staff.
 			</ul>
 			
 
-			My first accomplishment this week was seting up a codebase to handle uart traffic on the 
-			STM32 microcontroller. I first created a fifo buffer API, then initialized fifo buffers to 
-			collect incoming UART traffic. I set up interrupt handlers to push RX UART data into the 
-			buffers. I then wrote utilities to handle reading from these buffers, for example, routines
-			to block and read from a buffer until a specified character is seen, and a blocking read until
-			a given number of bytes are read.
+			The first step this week was to stabilize our wifi module driver codebase to the point that under any circumstance, a micro
+			using a wifi module could reset and re-initialize the wifi module on bootup. Measuring the time to configure connectivity,
+			the aggregator module (AM) (hosting the wifi accesspoint) is able to configure itself in under 0.5 seconds on bootup. The Car Detector Module (CDM), 
+			once the AM is powered on and configured, is able to connect to the access point of the AM in roughly one second and acquire an IP
+			address.
 			<br><br>
-			With these utilities, I was able to write a response handler to block on traffic from the 
-			Wifi modules, then parse into received packet data and module status updates. I also wrote initialization
-			routines for the Wifi module, sending commands necessary for creating a Wifi access point and 
-			accepting UDP packets, and checking module responses for success in between commands.
-			<br><br>
-			I then put together two tests, one for mass packet reception, and one for mass packet transmission between
-			Wifi modules. I measured the current drawn by the modules during these tests to include in the component 
-			analysis report. 
-			<br><br>
-			<h5>Figures</h5> 
-			<div style="margin: auto; text-align: center; ">
-				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_driver_arch.png"></img><br>
-				<b>Figure 6:</b> Wifi driver architecture
-			</div>
-			<br><br>
-			<div style="margin: auto; text-align: center;">
-				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_test.jpg"></img><br>
-				<b>Figure 7:</b> Breadboard setup for wifi current draw test
-			</div>
-            <br><br>
-			<div style="margin: auto; text-align: center;">
-				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/uart_rx_handler.png"></img><br>
-				<b>Figure 8:</b> UART RX Interrupt Handler
-			</div>
-            <br><br>
-			<div style="margin: auto; text-align: center;">
-				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_control_seq.png"></img><br>
-				<b>Figure 9:</b> Wifi Driver Control Sequence
-			</div>
-            <br>
+			The demo code initializes the wifi modules for the AM and CDM, then enters a loop where
+			<ol>
+				<li>If there is data waiting from the Wifi module, handle it and print the waiting message</li>
+				<li>If there is data waiting on the debug UART, assume the User is trying to send a message, acquire a line up to a Linefeed character, then send to the other module on the wifi link</li>
+			</ol>
+			with this setup, it appears as if the two modules have an instance of a bare-bones instant messaging application running between them.
 
-			<h5>Citations</h5> 
-			<ul>
-				<li>
-					https://espressif-docs.readthedocs-hosted.com/projects/esp-at/en/release-v2.2.0.0_esp32/AT_Command_Set/Basic_AT_Commands.html
-				</li>
-			</ul>
-
+			<br><br>
+			This successful demonstration lays the groundwork for our next goal, which is to bring proximity data into the network. 
+			The next step will be to connect a display to the AM, and increment a number shown on the display based on messages
+			received from the CDMs connected to the AM's access point. I have begun to implement the data structures necessary to 
+			accomplish this. Once the handling of increment (decrement) messages has been demonstrated successfully, we can move the 
+			trigger for these messages to be based on the readings from the proximity sensor on our CDMs. At this point, our prototype should
+			be complete and ready for design review.
+			<br><br>
+			Finally, for administrative tasks,  I reviewed the Bill of Materials and added the wifi module part that the team has been using until now.
+			Additionally, I configured a branch in our git repository to track changes made to our team website, which will make it easier to 
+			roll back changes if files are unintentionally modified or deleted. 
 
 			<h4>Week 4:</h4>
             <b>Date:</b> Friday, February 3, 2023<br>
