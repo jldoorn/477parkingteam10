@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+Name: Boilerplate
+Version: v1.3
+Last Updated: 4/24/2013
+Author: George Hadley
+License: Released for free under a Creative Commons Attribution 2.5 License
+
+This website was based upon a number of source materials, which are elaborated upon in credits.txt
+
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!--Reconfigurable base tag; used to modify the site root location for root-relative links-->
+<!-- Python SimpleHTTPServer Testing -->
+<!--<base href="/http://localhost:8000/" />-->
+<!-- ECE477 preview URL -->
+<!--<base href="/https://engineering.purdue.edu/ece477/preview/" />-->
+<!-- ECE477 final URL -->
+<!--<base href="/https://engineering.purdue.edu/ece477/" />-->
+<!--<base href="https://engineering.purdue.edu/ece477/StudentWebTemplate/" />-->
+    <base href="https://engineering.purdue.edu/477grp10/" /> <!-- Replace the N with your team number-->
+	
+<!--Content-->
+<title>ECE477 Homepage</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="author" content="George Hadley">
+<meta name = "format-detection" content = "telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<!--CSS-->
+<link rel="stylesheet" href="css/default.css" type="text/css" media="all" />
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/content.css">
+<!--[if IE 6]>
+<link href="/default_ie6.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+</head>
+<body>
+<div id="wrapper_site">
+    <div id="wrapper_page">
+		<!-- Instantiate global site header.-->
+		<div id="header"></div>
+		<!-- Instantiate site global navigation bar.-->
+		<div id="menu"></div>
+		<!-- Instantiate slideshow module. All slideshow images should be 1100px x 500px and stored in ./img/slideshow-->
+		<div id="slideshow"></div>
+		<!-- Instantiate main page content. All page content should be added to about.html -->
+		<div id="content">
+            <h2>Project Name: Parking Tracking System</h2>
+			
+            <h2>Project Description:</h2> The Parking Tracking System project includes tracking the parking availability of 
+			a single entrance/single exit garage for the purpose of a more efficient parking experience. This project will
+			utilize ultrasonic sensors that will communicate with the microcontroller to determine whether a car is entering
+			or leaving the garage. The system will also use 7-segment displays that are driven from a microcontroller to show 
+			users of the garage the total number of spaces that are avaialble. Along with this, the system will also have a
+			keypad and OLED screen that will communicate with the microcontroller on the main module to allow the user to 
+			initially configure and set-up the system, as well as allowing for changes to be made after the system is initialized, 
+			such as adding and removing Car Detector Modules. The keypad will function by the microcontroller using a row column 
+			matrix to determine which button is pressed. Wireless communication will be done using a WiFi 
+			module on the Aggregator Module, as well as the Car Detector Modules, with which the microcontroller will interface
+			in order to send and receive data packets. A laptop charger will be used to power the Aggregator Module with a 
+			switching regulator chip and a linear regulator chip to step down the input voltage. A portable battery bank will be used to	
+			power the Car Detector Module with a linear regulator chip to step down the input voltage.
+			<br>
+			<br>
+			One bonus design goal for our project will be to design our own 12V to 3.3V DC-DC switching regulator circuit instead of using a dedicated chip.
+			Another bonus design goal will be to design our own level shifter circuit for communicating between 5V and 3.3V instead of using a dedicated chip.
+			A third bonus design goal will be to develop a website where the number of available spaces will be displayed and updated.
+            
+            <h2>Project Specific Success Criteria (PSSCs):</h2>   
+                <ol>
+                    <li>PSSC #1 (Hardware): An ability for the microcontroller to trigger and receive data from an ultrasonic sensor using two GPIO pins.</li>
+                    <li>PSSC #2 (Hardware): An ability for our microcontroller to send data to an OLED screen using SPI.</li>
+                    <li>PSSC #3 (Hardware): An ability to use a row column matrix to determine what value is pressed on a 12 button keypad.</li>
+                    <li>PSSC #4 (Hardware): An ability for our microcontroller to drive a 7-segment display using an SPI shift register and MOSFETs.</li>
+                    <li>PSSC #5 (Hardware): An ability to interface between an ESP8266 WiFi wireless module and the microcontroller using the UART protocol.</li>
+                </ol>
+        </div>
+		<!-- Instantiate global footer. Any changes to the footer should be made through the top-level file "footer.html" -->
+		<div id="footer"></div>
+	</div>
+</div>
+
+<!--JS-->
+<script src="js/jquery.js"></script>
+<script src="js/jquery-migrate-1.1.1.js"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#header").load("header.html");
+	$("#menu").load("navbar.html");
+	$("#slideshow").load("slideshow.html");
+	//$("#content").load("about.html");
+	$("#footer").load("footer.html");
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+This is an example weekly progress report document that team members can use to report their individual progress 
+of their ECE477 senior design projects. Weekly progress reports are expected to follow the general guidelines
+presented in the "Progress Report Policy" document, posted on Brightspace.  
+
+Please create 4 copies of this example, renaming each copy to <PurdueID>.html, where <PurdueID> corresponds to
+the Purdue ITAP Career Account ID given by Purdue to each individual team member. If you have any questions,
+contact course staff.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!--Reconfigurable base tag; used to modify the site root location for root-relative links-->
+<!--<base href="https://engineering.purdue.edu/ece477/StudentWebTemplate/" />-->
+<base href="https://engineering.purdue.edu/477grp10/" /> <!-- Replace the N with your team number-->
+<!--Content-->
+<title>ECE477 Course Documents</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="author" content="George Hadley">
+<meta name = "format-detection" content = "telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<!--CSS-->
+<link rel="stylesheet" href="css/default.css" type="text/css" media="all" />
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/content.css">
+<!--[if IE 6]>
+<link href="default_ie6.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<style>
+.line {
+	border-bottom: 5px solid rgba(168, 21, 21, 0.861);
+	margin-top: 3px;
+	width: 100%;
+}
+</style>
+</head>
+<body>
+<div id="wrapper_site">
+    <div id="wrapper_page">
+	<!-- Instantiate global site header.-->
+	<div id="header"></div>
+		<!-- Instantiate site global navigation bar.-->
+		<div id="menu"></div>
+	
+		<!-- Instantiate a page banner image. Page banner images should be 1100x350px and should be located within the local
+			img folder located at this directory level. -->
+		<div id="banner">
+			<img src="Files/img/BannerImgExample.jpg"></img>
+		</div>
+	
+		<!-- Instantiate "tools" needed for a page. Tools are premade functional blocks that can be used to build a page,
+			and include things such as a file lister (for listing out homework assignments or tutorials)
+		-->
+		<div id="content">
+            <h2>Progress Report for Dan English</h2>
+			<h4>Week 5:</h4>
+            <b>Date:</b> 02.09.2023 <br>
+            <b>Total hours:</b> 9 (in progress)<br>
+            <b>Description of project design efforts:</b><br>
+            <p style = "padding-left:20px">
+				<br>
+				&emsp; I forgot to mention this last week, but I worked with Aaron on initial testing of the sonar sensor.
+				The protocol for using the sensor is to set the trigger pin high for 10us and wait for the echo signal. Once
+				the trigger is set, the sensor sends out a series of sonar pulses, which it uses to measure the distance to the
+				objects within its field of view. Once the measurement is complete, it outputs a logic high on the echo pin for a 
+				duration related to the measured distance, where the distance in inches is equal to the length of the logic high in 
+				microseconds divided by 148. Aaron and I were only able to send trigger signals to the sensor and view the waveforms 
+				on the oscilloscope; reading and decoding the echo signal with the microcontroller will be this week's task. In
+				Figures 5.1-5.4, you can see the waveforms captured on the oscilloscope during our communication between the sensor
+				and the microcontroller. The pink wave is the output of the micro, which is connected to the gate of a MOSFET that
+				pulls the trigger pin to ground (this is a little makeshift level shifter I made from 3.3V from the micro to 5V for the sensor).
+				The blue wave is the actual trigger pin, which is 5V when the MOSFET is off and 0V when the MOSFET is on. The green
+				wave is the echo response from the sensor, where the length corresponds to a distance. In Figure 5.2, I zoom 
+				in on the switching of the MOSFET and how it affects the trigger signal, which some ringing is apparent. I believe
+				that since the signal is held high for 10 us, these non-ideal switching slopes will be inconsequential to our communication,
+				but it is something to note and look into for further confidence that there will be no issues.
+
+
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/wave01.jpg" width = 400></img></center>
+				<br>
+				<center><b>Figure 5.1:</b> Oscilloscope Capture of the Trigger Signal being driven High for 10us</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/wave02.jpg" width = 200></img>
+					<img src = "Team/progress/img/Dan/Week4/wave03.jpg" width = 200></img>
+					<img src = "Team/progress/img/Dan/Week4/wave04.jpg" width = 200></img>
+					<img src = "Team/progress/img/Dan/Week4/wave05.jpg" width = 200></img></center>
+				<br>
+				<center><b>Figure 5.2:</b> Oscilloscope Captures of MOSFET Non-Ideal Switching and Ringing</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/wave06.jpg" width = 400></img></center>
+				<br>
+				<center><b>Figure 5.3:</b> Oscilloscope Capture of the Echo Signal being driven High by the Sensor</center>
+				<br>
+				<br>
+				&emsp; This week, I began designing the schematic for the Aggregator Module (AM), which will be used for the 
+				PCB layout. 
+
+				<br>
+				Notes: 
+				<br>talked to staff about soldering large 7seg, decide to design own pcb with led driver and Castellated soldering mounting holes;
+				<br>went with Aaron to ECE shop to look at available resistors, caps, induc; also saw leds and grabbed some switches, buttons for user interfaces and a dc plug mount for pcb
+				<br>talked to joe about wire headers for connecting pcb to 7seg with crimping wires
+				<br>
+			
+			
+			
+			
+			
+			
+				<br>
+
+				</p>
+            
+
+			<br>
+
+				<div class = "line"></div>
+			
+
+				<br>
+			
+			
+			
+			<h2>Progress Report for Dan English</h2>
+			<h4>Week 4:</h4>
+            <b>Date:</b> 02.03.2023 <br>
+            <b>Total hours:</b> 12<br>
+            <b>Description of project design efforts:</b><br>
+            <p style = "padding-left:20px">
+				<br>
+				&emsp; The first thing I accomplished this week was designing a block diagram for the major power bus needs of our Aggregator Module (AM).
+				The main goal was to come up with a functional block diagram before designing our schematic in KiCad, with an emphasis on the power needs of the module.
+				This block diagram will be easier to modify and conceptualize, which will make the drawing of the
+				actual schematic much more efficitent with less errors the first time. Additionally, this block diagram
+				helped me understand how all the power will be distributed on the different power buses within the PCB. Once I figure out all the power requirements,
+				I can finalize a selection of buck converters and voltage regulators, and their corresponding circuits, 
+				to incorporate within our design. These are the last things to figure out before beginning to draw our
+				schematics. 
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/blockAM_power.JPG" width = 800></img></center>
+				<br>
+				<center><b>Figure 4.1:</b> Power Block Diagram of Aggregator Module (AM)</center>
+				<br>
+				<br>
+				&emsp; The block diagram for the AM is shown in Figure 4.1. This details the main power buses that will be on our PCB along with each component connected to
+				each bus. Since the AM has more flexbility in placement and a more central location, it will be powered by a wall outlet via a laptop charger used as an
+				AC-DC adapter. This adapter will output 12V and up to 5A, which is plenty of power for the rest of our devices. The 12V bus will be used for powering the
+				large 7-segment displays. The current plan is to use shift registers to store the segment data to be displayed. The microcontroller will 
+				decode the digit to display, write a byte to the shift register corresponding to which segments to turn on in order to display the digit, and the outputs of the shift
+				register will turn on MOSFETs connecting the 12V bus to each segment. We haven't figured out exactly which shift register to use, but it will either have an SPI or
+				synchronous serial communication protocol.
+				<br>
+				&emsp; Currently, there is nothing on the 5V bus. When I had originally drawn this diagram, the OLED we were going to use was a 5V device. Therefore, we would need 
+				a 5V bus to power the display and a level shifter to communicate with it with the microcontroller. However, the OLED we currently have decided to use runs off 3.3V,
+				and thus will be placed on that bus. As a result, I have begun to look at different buck converter chips to use. The one in our possession currently is a 12V input,
+				5V 1.5A output. However, without the need for a 5V bus on our AM, we can use a 12V to 3.3V buck converter and remove the 5V to 3.3V linear regulator. For now,
+				we will continue with the 12V to 5V buck and 5V to 3.3V regulator, as we have hardware with which to test and this allows for us to easily add a 5V bus in the future,
+				but I will be looking at other buck converters to eliminate this extra conversion step on our PCB. I took some pictures of buck converters available in the ECE Shop,
+				shown in Figure 4.2. I will be spending this weekend and next week looking at each of these parts and determining any will satisfy our design needs.
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/buck01.jpg" width = 100></img><img src = "Team/progress/img/Dan/Week4/buck02.jpg" width = 100></img><img src = "Team/progress/img/Dan/Week4/buck03.jpg" width = 100></img><img src = "Team/progress/img/Dan/Week4/buck04.jpg" width = 100></img></center>
+				<center><img src = "Team/progress/img/Dan/Week4/buck05.jpg" width = 100></img><img src = "Team/progress/img/Dan/Week4/buck06.jpg" width = 100></img><img src = "Team/progress/img/Dan/Week4/buck07.jpg" width = 100></center>
+				<br>
+				<center><b>Figure 4.2:</b> Buck Converter Component Wheels in ECE Shop</center>
+				<br>
+				<br>
+				&emsp; Lastly for this module, there is the 3.3V bus. This is where most of our electronic devices will be located, mainly the microcontroller and wifi module. 
+				In order to determine the power needs of this bus, I ran multiple tests using the benchtop supplies and measurement equipment. First, I wanted to determine the
+				power loss of our linear regulator at different output currents. As a result, I created four resistive networks to create four different output currents when connected
+				to the load side of the 5V to 3.3V linear regulator. The circuits are pictured in Figure 4.3. The desired output currents to test were 200mA, 100mA, 50mA, and 10mA. I felt
+				this would give me a wide enough range of loss values based on the different power draws our 3.3V bus will experience during operation. To achieve these currents at 3.3V,
+				I designed four resistive networks with equivalent resistences equal to 16.5 ohms, 33 ohms, 66 ohms, and 330 ohms. The first was made with two 33 ohm resistors in parallel,
+				which produced a measured equivalent resistance of 16.235 ohms. The input power to this circuit was measured to be 1,005 mW, and the output power was measured to be 665 mW. 
+				The second was made with two 68 ohm resistors in parallel, producing a measured equivalent resistance of 34.042 ohms. The input power was measured to be 505 mW, and the 
+				output power was measured to be 317 mW. The third was made with a 47 ohm resistor and 22 ohm resistor in series, which produced a measured equivalent resistance of 
+				68.973 ohms. The input power was measured to be 265 mW, and the output power was measured to be 157 mW. The fourth was made with a single 330 ohm resistance, which was 
+				measured to be 329.52 ohms. The input power was measured to be 80 mW, and the output power was measured to be 33 mW. The measurement and testing setup is shown in 
+				Figure 4.4. Based on these measurements, the efficiencies were
+				66%, 63%, 59%, and 41%, respectively. These numbers were higher than I expected, especially at higher power. Therefore, I think this linear regulator will be effective 
+				enough to use on our PCB. 
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/linRegExp.jpg" width = 600></img></center>
+				<br>
+				<center><b>Figure 4.3:</b> Resistive Network Circuits for Testing Linear Regulator</center>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week4/linRegSetup.jpg" width = 300></img></center>
+				<br>
+				<center><b>Figure 4.4:</b> Linear Regulator Test and Measurement Setup</center>
+				
+			
+			
+			
+			
+			
+			
+				<br>
+
+				</p>
+            
+
+			<br>
+
+				<div class = "line"></div>
+			
+
+				<br>
+            
+            <h4>Week 3:</h4>
+            <b>Date:</b> 01.27.2023 <br>
+            <b>Total hours:</b> 12<br>
+            <b>Description of project design efforts:</b><br>
+            <p style = "padding-left:20px">
+				<br>
+				&emsp; Over the weekend, I began to play around with the KiCad Software. I found a YouTube playlist by Digi-Key
+				(<a href="https://www.youtube.com/playlist?list=PLEBQazB0HUyR24ckSZ5u05TZHV9khgA1O" target="_blank">Link to Playlist</a>) with some intro videos on KiCad. I watched the first video, which
+				explained the material setup of a PCB with all the layers and gave an overview of general considerations to have while designing a board. 
+				I also practiced using the tool by following a tutorial on the KiCad website (<a href="https://docs.kicad.org/6.0/en/getting_started_in_kicad/getting_started_in_kicad.html"target="_blank">Link to Tutorial</a>).
+				The tutorial did a really good job of walking through a simple PCB design all the way from creating a schematic to viewing a 3D-model and finally generating
+				Gerber files, which could be sent to a fabricator. The first step was to create a schematic of a simple circuit involving a battery, LED, and current limiting
+				resistor, shown in Figure 3.1. From this, I was able to create a bill of materials (BOM), which could be used to order the parts necessary to solder on my PCB. 
+				The BOM is shown in Figure 3.2. With the schematic finished, I created the PCB design by laying out each of the components, routing the pins on the board,
+				and filling a GND pad, shown in Figure 3.3. With the PCB design finished, I viewed a CAD model of the finished product with the LED and resistor on one side 
+				and the battery on the other side, shown in Figure 3.4. After this, I went back and modified my schematic, PCB design, and 3-D CAD model to include a switch
+				in the circuit, allowing for a user to turn the LED on and off. These steps are shown in Figures 3.5 - 3.7. 
+
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/schematic.JPG" width=300></img></center>
+				<br>
+				<center><b>Figure 3.1:</b> Schematic of KiCad Tutorial with Battery, LED, Resistor</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/bom.JPG" width=800></img></center>
+				<br>
+				<center><b>Figure 3.2:</b> Bill of Materials from KiCad Tutorial</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/pcb_designDraft.JPG" width=300></img></center>
+				<br>
+				<center><b>Figure 3.3:</b> PCB Design of KiCad Tutorial with Battery, LED, Resistor</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/3d_battery.JPG" width=25%></img><img src = "Team/progress/img/Dan/KiCad_tutorial/3d_led_resistor.JPG" width=50%></img></center>
+				<br>
+				<center><b>Figure 3.4:</b> 3-D CAD Model of KiCad Tutorial with Battery, LED, Resistor</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/schematic_switch.JPG" width=300></img></center>
+				<br>
+				<center><b>Figure 3.5:</b> Schematic of KiCad Tutorial with Addition of Switch</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/pcb_designSwitch.JPG" width=300></img></center>
+				<br>
+				<center><b>Figure 3.6:</b> PCB Design of KiCad Tutorial with Addition of Switch</center>
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/KiCad_tutorial/3d_switch.JPG" width=400></img></center>
+				<br>
+				<center><b>Figure 3.7:</b> 3-D CAD Model of KiCad Tutorial with addition of Switch</center>
+
+				<br>
+				<br>
+				&emsp; I learned a lot from going through this tutorial, both about how to use KiCad and also general tips regarding the full PCB design process. The 
+				tutorial did a really good job going through the different software packages included in KiCad (schematic, PCB, 3-D CAD). In addition
+				to having me complete a typical, simple design process, it also guided me through the process of making custom symbols and footprints,
+				which can be added to the schematic and implemented within the PCB design. This will be extremely helpful during the PCB design process
+				for our project, as we will have many parts on our board that are not found within the standard, provided libraries in the KiCad program.
+				Lastly, I learned from the tutorial the importance of ERC and DRC checking throughout the design process. This is necessary to ensuring
+				our design will function properly, especially since there is a larger consequence for needing to re-fabricate our PCB. After completing
+				this tutorial, I feel a lot more competent with using the KiCad software packages and am ready to begin building the schematic for our design.
+				<br>
+				<br>
+				&emsp; After completing the KiCad tutorial, I began to work on the PCB design for our proect. Since we have two modules involved with our project
+				(the Aggregator Module [AM] and Car Detector Module [CDM]), our team will have to design 2 separate PCB designs, although there will be overlap
+				and similarities that will make the overall design process easier. Since Aaron will be working with me on the PCB portion of our project, we
+				decided to split up the designs; I will design the CDM PCB and he will design the AM PCB. However, we will not work exclusively on these designs;
+				there will be collaboration between our work, especially with the circuit details of similar portions of each PCB (e.g. wifi module, microcontroller,
+				power regulator, etc.). 
+				<br>
+				<br>
+				&emsp; To start the PCB design for the CDM, I first added the HC-SR04 UltraSonic Sonar Distance Sensor: <a href="https://www.adafruit.com/product/3942"target="_blank">Link to Product</a>.
+				I found symbol and footprint files for the component to include with our KiCad 6.0 software, which I downloaded and added to a schematic: 
+				<a href="https://www.snapeda.com/parts/HC-SR04/SparkFun%20Electronics/view-part/" target="_blank">Link to Download</a>. A picture of the product, symbol, and footprint
+				are shown in Figure 3.8.
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week3/hc-sr04_product.jpg" width=20%></img><img src = "Team/progress/img/Dan/Week3/hc-sr04_symbol.JPG" width=30%></img><img src = "Team/progress/img/Dan/Week3/hc-sr04_footprint.JPG" width=35%></img></center>
+				<br>
+				<center><b>Figure 3.8:</b> Product Image, Symbol, and Footprint of HC-SR04 UltraSonic Sonar Distance Sensor</center>
+				<br>
+				<br>
+				&emsp; After adding the sensor, I started to work on the power supply for our circuits. While both our AM and CDM modules have similar electronic parts,
+				there are some key differences that make the power selection more complicated. The main points are that the AM will need 12 V to power the LEDs in 
+				the larger 7-segment displays and the CDM will be supplied by some kind of remote power source. Originally, I had planned on designing one of the DC-DC
+				converter circuits to place on our PCB; however, with our design efforts focused on our other PSSCs, we decided to look at parts and chips to meed our power
+				electronic needs. 
+				<br>
+				<br>
+				&emsp; First, I started looking at the AM power needs. The main components involved with this module will be the STM microcontroller, the wifi module, the 
+				OLED display, and two large 7-segment displays. The board will need 12V for the 7-segment displays, 5V for the data lines to the 7-segment and the OLED, 
+				and 3.3V for each of the other modules. Based on these needs, I plan on implementing 3 main power buses on our PCB for the AM: 12V, 5V, and 3.3V. The 12V bus will
+				exclusively be used to power the 7-segment display LEDs with current limiting resistors. I haven't quite figured it all out yet, but I think using shift registers,
+				controlled by the microcontroller's GPIO pins, to turn on and off MOSFETs connecting the 12V bus to the LEDs will be a good plan. I will need to research
+				the current MOSFETs, which I own, to determine if they are rated for the voltage and currents expected. The 5V bus will be used for external chips and data lines.
+				I will have to look into a level shifter for communicating between a 5V chip and the 3.3V microcontroller. Lastly, the 3.3V bus will be used for our microcontroller and wifi module.
+				To achieve these three buses on our PCB, we have a 12V 5A wall adapter that will plug into the board from an outlet, shown in Figure 3.9, and two separate DC-DC 
+				voltage regulator chips. I plan on talking to the ECE Shop to see if they have any that satisfy our needs, but a quick search online revealed several available at 
+				Digikey and Mouser.
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week3/acdc_wallAdapter.jpg" width=300></img></center>
+				<br>
+				<center><b>Figure 3.9:</b> 12V 5A output AC-DC Wall Outlet Adapter</center>
+				<br>
+				<br>
+				&emsp; For the CDM, the power will be a little simpler. For the PCB, the microcontroller and wifi chip will need 3.3 V and the sonar sensor will need 5V.
+				Similar to the AM, we will need a level shifter to communicate between the 5V sensor and 3.3V microcontroller. We plan to have an input supply of 5V, so that 
+				only one DC-DC voltage regulator is needed (for converting from 5V to 3.3V). A 5V bus can be made directly from the supply. The power challenge with the CDM is that
+				it will need to be remotely powered. To accomplish this, I found a rechargeable power bank, which is typically used for charing phones on the go. This power bank, 
+				shown in Figure 3.10, has 38,800 mAh, which will meet our battery life desire by providing at least one week of operation. This power bank has USB-A outputs rated at 
+				5V 2A, which is perfect for our deisgn. I plan on fixing this power bank to the back of our packaging and connecting it to the PCB via a USB-USB Type C cable with 
+				a USB Type C connector on the board connected to the power lines. 
+
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week3/powerbank.jpg" width=300></img></center>
+				<br>
+				<center><b>Figure 3.10:</b> Portable Charger 38,800 mAh with 5V 2A USB Output Ports</center>
+			
+				<br>
+				<br>
+				&emsp; Finally, I began to implement the wifi module in our design. However, finding PCB symbol and footprint files for the part which we are using was difficult. There are
+				many resources for the wifi chip itsel; however, there is not much on the entire module we are using, which includes the antenna and some other side circuitry. My guess is
+				that because this part was intended for use with a breadboard, there isn't much information available on how to put it on a PCB. Yet, I found one guy's blog where he 
+				had made through-holes for the 2x4 breadboard connector on the ESP-01S. I think we will have to do a similar thing with our PCB design, and I will have to manually draw the 
+				fooprint in order to provide ample space for the entire component. I plan on placing it away from most of the other electronics in order to avoid any interference with the 
+				wifi signal, which will reduce the consequence of not having exact symbol and footprint files for our PCB. 
+				<br>
+				<br>
+				&emsp; As I plan for next week, my goals are to complete a block diagram of both the AM and CDM circuits, finalize part selections for
+				the power electronics of our board, and create symbols/footprints in KiCad for each of the parts we plan to use on our PCB. 
+			
+			</p>
+				<br>
+
+				<div class = "line"></div>
+			
+
+				<br>
+				<h4>Weeks 1-2:</h4>
+            <b>Date:</b> 01.20.2023<br>
+            <b>Total hours:</b> 12<br>
+            <b>Description of project design efforts:</b><br>
+			<p style = "padding-left:20px">
+				<br>
+				&emsp; With the rest of the team, I worked on our Final Project Proposal and Functional Spcification documents. 
+				For the Final Project Proposal, I wrote my personal section on being the Hardware Engineer for the team. I also collaborated
+				with my teammates to come up with our final PSSCs that will be the main design goals of our project. During the early stages
+				of the creation for our PSSCs, we were unsure if our project would contain the necessary 3 hardware criteria required for the course.
+				As a result, I researched how much design effort would be necessary to add a DC-DC converter design to our project. Having worked with
+				a DC-DC converter in one of my internships and in some of my EE labs, I felt fairly confident that I would be able to design one for
+				our PCB, which would help our team reach the 3 hardware PSSC requirement. As part of my research, I met with my Power Electronics 
+				professor, Dr. Pekarek, and discussed the design effort that would go into including a DC-DC converter in our project. He provided much
+				insight into the expected amount of work, along with special considerations necessary to ensuring it wouldn't ruin the rest of the 
+				electronics on the PCB. Although my group and I developed other hardware PSSCs more related to our project, meaning that we wouldn't 
+				need to design our own DC-DC converter and can simply buy a device to satisfy our PCB needs, the information I learned during my 
+				research and discussion with Dr. Pekarek will be helpful to ensuring the success of integrating an off-the-shelf DC-DC converter 
+				on our PCB.
+				<br>
+				<br>
+				&emsp; For the Functional Specification document, in addition to working with my team and reviewing the entire document,
+				I completed the research and writing necessary to complete the Thermal/Power Constraints section. This included looking at
+				the datasheets for each of the major electronic components that will be a part of our Car Detector Module (CDM). Specifically,
+				there will be a mircocontroller, a radar sensor, and wifi module. I computed the worst case power draw from each device, 
+				compared it to our battery pack, and calculated that our CDM will last 7 days, which meets our desired goal for our prototype.
+				<br>
+				<br>
+				&emsp; I also worked with Aaron on researching different 7-segment displays for our project. Originally, our team planned to implement our
+				project within an actual garage scenario, as that was the best way to test the camera and computer vision setup. Therefore, we would need digit
+				displays large enough for our customers, the drivers, to read from the road. Since the goal of our project is to help the driver be more informed
+				about the number of available parking spots within a garage, and thus make the parking experience more convenient on their end, we need displays
+				large enough to be read before the driver entered the garage; otherwise, the information would be available to them too late to make a decision.
+				Aaron and I originally found a 6.5" tall display, shown in Figure 2.1. 
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/seven_segment.jpg" width=200></img></center>
+				<br>
+				<center><b>Figure 2.1:</b> Large 6.5" 7-Segment-Display (<a href = "https://www.electromaker.io/shop/product/7-segment-display-65-red?gclid=Cj0KCQiAt66eBhCnARIsAKf3ZNEXIjIibITa1CcnseL1OM3bdATq_aS3b3qoXcU5k2M6YVeMNiuT47EaAiBOEALw_wcB" target="_blank">Link to Product</a>)</center>
+
+				<br>
+				<br>
+				<p style = "padding-left:20px">
+				However, I felt that its size would still be too small for our application 
+				and decided to research further. Despite spending several minutes on the internet, the only larger display I could find was from a Polish company,
+				and some of their available displays are shown in Figure 2.2. While these larger displays would fit perfectly within our application, dealing with
+				global shipping would be too much of a nightmare. In the end, I agreed with Aaron to settle on the 6.5" displays for our project.
+			</p><br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Polish_Seven_Segment.jpg" width=400></img></center>
+				<br>
+				<center><b>Figure 2.2:</b> Large 25" 7-Segment-Display from Poland (<a href="https://flipdots.com/en/products-services/large-7-segment-displays/"target="_blank">Link to Product</a>)</center>
+				<br>
+				<br>
+				<p style = "padding-left:20px">
+				&emsp; Lastly, this week, I took some pictures of the Hawkins Parking Garage and annoted them. The pictures with my annotations are shown in Figure 3 below.
+                Our original plan involved a camera and sonar sensor setup. The camera would record video of the entrance or exit ramp to the garage, and when the sonar
+                sensor trips, indicating a car is nearby, the computer vision model would run on the video feed to identify a car and its direction (entering or leaving 
+                the garage). To help with our team's design efforts, I took some pictures of the Hawkins Parking Garage, which is the most suitable garage for our project
+                because there is only one entrance ramp, only one exit ramp, and they are both next to each other. My annotations on these pictures, shown in Figure 2.3,
+                highlight key landmarks of the garage and also point out potential locations where our cameras, sensors, and electronics could have been placed and supplied
+                with power. Although our project is taking a slightly different direction now, only using the sonar instead of the cameras and building a smaller model for
+                prototype and demonstration purposes, these pictures and annotations helped my team and I better grasp the constraints of our project and how best to design
+                our system to meet our goals. </p>
+
+                <br>
+                <br>
+                <center><img src="Team/progress/img/Dan/Garage Picture Annotations/Slide1.JPG" width = 400, style = " border: 3px solid black" > </img>
+				<img src="Team/progress/img/Dan/Garage Picture Annotations/Slide2.JPG" width = 400 , style = " border: 3px solid black"> </img></center>
+				<center><img src="Team/progress/img/Dan/Garage Picture Annotations/Slide3.JPG" width = 400 , style = " border: 3px solid black"> </img>
+				<img src="Team/progress/img/Dan/Garage Picture Annotations/Slide4.JPG" width = 400 , style = " border: 3px solid black"> </img></center>
+				<center><img src="Team/progress/img/Dan/Garage Picture Annotations/Slide5.JPG" width = 400 , style = " border: 3px solid black" > </img>
+				<img src="Team/progress/img/Dan/Garage Picture Annotations/Slide6.JPG" width = 400 , style = " border: 3px solid black"> </img></center>
+				<br>
+				<center><b>Figure 2.3:</b> Pictures with Annotations of Hawkins Parking Garage</center>
+
+				<br>
+				<br>
+				<p style = "padding-left:20px">
+				&emsp; Next week, I plan on beginning my work with the PCB design. I have already download KiCad, but have
+				not had time yet to mess around with it. I hope to work through a tutorial to get myself familiar with the software,
+				and then collaborate with Aaron on putting together some of the initial pieces of our PCBs. With the two modules 
+				that we have to design, we will first focus on the parts similar to both, specifically the micro and the wifi modules.
+				If I have time besides the PCB, I will help Fred and Jon with testing and debugging the interfaces between some of our hardware pieces,
+				especially the wifi module because it is new to all of us.
+				<br>
+				</p>
+
+            <br>
+				<!---<div class = "line"></div>
+			--->
+
+				<br>
+                      
+        </div>
+	
+		<!-- Instantiate global footer. Any changes to the footer should be made through the top-level file "footer.html" -->
+		<div id="footer"></div>
+    </div>
+</div>
+
+<!--JS-->
+<script src="js/jquery.js"></script>
+<script src="js/jquery-migrate-1.1.1.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#header").load("header.html");
+	$("#menu").load("navbar.html");
+	$("#footer").load("footer.html");
+});
+</script>
+</body>
+</html>

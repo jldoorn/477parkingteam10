@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+This is an example weekly progress report document that team members can use to report their individual progress 
+of their ECE477 senior design projects. Weekly progress reports are expected to follow the general guidelines
+presented in the "Progress Report Policy" document, posted on Brightspace.  
+
+Please create 4 copies of this example, renaming each copy to <PurdueID>.html, where <PurdueID> corresponds to
+the Purdue ITAP Career Account ID given by Purdue to each individual team member. If you have any questions,
+contact course staff.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!--Reconfigurable base tag; used to modify the site root location for root-relative links-->
+<!--<base href="https://engineering.purdue.edu/ece477/StudentWebTemplate/" />-->
+    <base href="https://engineering.purdue.edu/477grp10/" /> <!-- Replace the N with your team number-->
+
+<!--Content-->
+<title>ECE477 Course Documents</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="author" content="George Hadley">
+<meta name = "format-detection" content = "telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<!--CSS-->
+<link rel="stylesheet" href="css/default.css" type="text/css" media="all" />
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/content.css">
+<!--[if IE 6]>
+<link href="default_ie6.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+</head>
+<body>
+<div id="wrapper_site">
+    <div id="wrapper_page">
+	<!-- Instantiate global site header.-->
+	<div id="header"></div>
+		<!-- Instantiate site global navigation bar.-->
+		<div id="menu"></div>
+	
+		<!-- Instantiate a page banner image. Page banner images should be 1100x350px and should be located within the local
+			img folder located at this directory level. -->
+		<div id="banner">
+			<img src="Files/img/BannerImgExample.jpg"></img>
+		</div>
+	
+		<!-- Instantiate "tools" needed for a page. Tools are premade functional blocks that can be used to build a page,
+			and include things such as a file lister (for listing out homework assignments or tutorials)
+		-->
+		<div id="content">
+            <h2>Progress Report for Heath Aaron Lovell</h2>
+            
+            <h4>Week 4:</h4>
+            <b>Date:</b> 2/1/2023<br>
+            <b>Total hours: 13</b> <br>
+            <b>Description of project design efforts:</b><br>
+            <ul style = "padding-left:20px">
+                &emsp;&emsp;To start this week out, I worked on using the ultrasonic sensor with the microncontroller, after learning how the sensor functioned 
+                from the testing that we performed on it last week. The ultrasonic sensor utilizes pins for power, ground, trigger, and echo. For the sensor to
+                work, I first supply 5V power and ground to the it. Then, the trigger pin is pulled low, the MCU waits 10 microseconds, the trigger pin is pulled
+                high, the MCU waits 10 microseconds, and then the trigger pin is pulled low again. The MCU then waits until the echo pin is high, and while the echo
+                pin is high, the MCU keeps count of the number of microseconds that it is high for. This translates to the distance that is seen in front of the 
+                ultrasonic sensor, with the distance in inches being equal to uS / 148. The timer I am using for this runs at 100kHz, so I am dividing uS by 14.8
+                rather than 148 to get the distance in inches. Shown below in Figure 4.1 is the wiring for the ultrasonic sensor, as well as the output when 
+                performing a test. The test is shown in Figure 4.2, with the whiteboard shown at the bottom of the image being 28 inches away. In Figure 4.3, I 
+                have included a snippet of the working code that was used for this demo. The function 'sonar' returns a value, 'counter', which is equivalent to the
+                number of times a timer has run with a frequency of 100kHz, where dividing it by 14.8 will give the distance in inches.
+                <center><img src = "Team/progress/img/aaron/week4/ultrasonicsensorwiring.jpg" width=600></img></center>
+                <center><b>Figure 4.1: Ultrasonic sensor wiring</b> </center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week4/ultrasonicsensortest.jpg" width=600></img></center>
+                <center><b>Figure 4.2: Ultrasonic sensor test</b> </center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week4/ultrasoniccode.jpg" width=600></img></center>
+                <center><b>Figure 4.3: Ultrasonic sensor code</b> </center>
+                <br>
+                &emsp;&emsp;After getting a working demo for the ultrasonic sensor, I began to work on the PCB design for our car detector modules (CDMs). While 
+                working on the PCBs, Dan and I went to the ECE Shop to see what components they had, as we needed user switches, a USB adapter for power to the CDMs,
+                a 2.1mm jack for power to the AM, and reset switches. Shown below in Figure 4.4 is what we were able to find in the ECE Shop for the components listed
+                above. For the PCB design, I got a good start for the initial schematic. I found the level shifter that we will be using and wired it to the ultrasonic
+                sensor. I also found a symbol for a USB micro connector, which we will be using to power the CDM. The schematic I have so far is shown below in Figure 4.5.
+                <center><img src = "Team/progress/img/aaron/week4/components.jpg" width=600></img></center>
+                <center><b>Figure 4.4: User switch, micro-USB adapter for power, 2.1mm jack for power, reset switch</b> </center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week4/CDMpcb.jpg" width=600></img></center>
+                <center><b>Figure 4.5: CDM PCB schematic</b> </center>
+                <br>
+            </ul>
+
+            <h4>Week 4:</h4>
+            <b>Date:</b> 2/1/2023<br>
+            <b>Total hours: 11</b> <br>
+            <b>Description of project design efforts:</b><br>
+            <ul style = "padding-left:20px">
+                &emsp;&emsp;This week, I spent a lot of time setting up the CUBE IDE for programming the STM32 microcontroller that we are using for our project. 
+                I used the IDE to do some testing on the microcontroller just to make sure that everything was working correctly, but realized I would need to use
+                a different STLink since I was not able to update the firmware on mine. With Joe's help, I was able to use a STLink module from a nucleo board as
+                a standalone STLink that would work on my microcontroller, which is pictured below in Figure 3.1.
+                <center><img src = "Team/progress/img/aaron/week3/stlink.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 3.1:</b> STLink from nucleo board</center>
+                <br>
+                &emsp;&emsp;I then began to work on our ultrasonic sensors with Fred. We looked through guides and read about how to use it, realizing
+                that we would just need two GPIO pins for the trigger and echo pins on it, along with 5V power for the sensor. After researching, we began
+                to spend a lot of time on testing the ultrasonic sensor and seeing if we could get any output from it. We weren't having any luck, so we 
+                decided to use the oscilloscope with Dan to see if there was any response after we pulled the trigger pin high for 10 microseconds. Shown in
+                Figure 3.2 is how we had the ultrasonic sensor looking at a white board for our testing. Figure 3.3 shows how the ultrasonic sensor was wired
+                to include a 3.3V to 5V to use with the trigger pin. Figure 3.4 shows the result on the oscilloscope.
+                <center><img src = "Team/progress/img/aaron/week3/whiteboard.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 3.2:</b> Ultrasonic sensor looking at whiteboard</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week3/breadboard.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 3.3:</b> Ultrasonic sensor wiring</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week3/oscilloscope.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 3.4:</b> Oscilloscope result</center>
+                <br>
+                &emsp;&emsp;As you can see on the oscilloscope, the ultrasonic sensor is returning a pulse for approximately 1.6 ms on the echo pin, which 
+                is equivalent to 10.81 inches using the provided calculation (distance in inches = uS / 148). After this I continued to work on reading the
+                value in from the echo pin on the microcontroller to get a distance calculation so I would be able to display it on the OLED screen I have
+                on my microcontroller, but I did not finish that so I will continue to work on that into next week.
+            </ul>
+
+            <h4>Week 3:</h4>
+            <b>Date:</b> 1/27/2023<br>
+            <b>Total hours:</b> 10<br>
+            <b>Description of project design efforts:</b><br>
+            <ul style = "padding-left:20px">
+                &emsp;&emsp;First, as shown below in Figure 2.1, I created an excel sheet with all of the parts we will be using in our project. The reasoning
+                behind this was to determine what power supply and batteries would be viable for our project, along wtih determining what operating voltages we
+                would require as well as the current draw. From this list, it was determined that the car detector module (CDM) would need something to supply 5V
+                and 1A to the system, which we have decided to use a portable phone charger for. The CDM will also require 3.3V, so we will need to step the 5V down.
+                Along with this, the aggregator module (AM) will require 12V and 2A for the system, and we decided a 12.5V, 5A laptop charger is what we will use for 
+                power. The AM will also require 5V and 3.3V, so we will need to step the 12V down to these voltages.
+                <center><img src = "Team/progress/img/aaron/week2/part_list.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 2.1:</b> Part list for the parking tracking system</center>
+                <br>
+                &emsp;&emsp;Next, since we finalized which 7-segment display we were going to use, I placed the purchase request for that so we will be able to 
+                prototype with them and create our own version of the large digit driver that is provided by Sparkfun <a href="https://www.sparkfun.com/products/13279">here</a>.
+                <br>
+                <br>
+                &emsp;&emsp;I spent a lot of time this week on completing the software overview, where I gave a brief overview of all the software that would be included in 
+                our project. This included detailing a high-level overview of the different software implementations we will be utilizing (reading in the ultrasonic data, 
+                wireless communication between the AM and CDMs, driving the 7-segment display to show the available spaces, and communicating with the OLED display and 
+                keypad for system configuration). I also described the algorithms we will be using in this project, incluing the ultrasonic sensor detection, wireless 
+                communication, and keypad and OLED functionality. I included a description of the data structure that we will be using for our wireless communication, detailing
+                how we will set up the 4-byte packet to include the sensor ID, API code, and data. Finally, as shown below in Figures 2.2-2.6, I created flowcharts for each of the algorithms, as 
+                well as our two state machine diagrams (AM and CDM).
+                <center><img src = "Team/progress/img/aaron/week2/UltrasonicSensorDetection.png" width=600></img></center>
+                <br>
+                <center><b>Figure 2.2:</b> Car detector module (CDM) flowchart</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week2/WirelessCommunication.png" width=600></img></center>
+                <br>
+                <center><b>Figure 2.3:</b> Wireless communcation from AM flowchart</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week2/KeypadOLED.png" width=600></img></center>
+                <br>
+                <center><b>Figure 2.4:</b> Keypad and OLED flowchart</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week2/AMStateMachine.png" width=600></img></center>
+                <br>
+                <center><b>Figure 2.5:</b> Aggregator Module state machine</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week2/CDMStateMachine.png" width=600></img></center>
+                <br>
+                <center><b>Figure 2.6:</b> Car Detector Module state machine</center>
+                <br>
+                &emsp;&emsp;Finally, I spent some of my time working on more of the KiCad tutorial. I went through and learned how to place the footprints on the PCB, routing tracks
+                placing the copper zones, and using the design rule checking function. I was able to implement utilizing both sides of the board to allow for more use of the space, as
+                well as routing the tracks from the front to the back side of the board. After all of this, I was then able to see what I had designed in the 3D viewer, which allowed
+                me to further inspect the PCB with the parts on it, while showing the correct dimensions for everything. The 3D viewing model of the front and back of the PCB is shown 
+                below in Figures 2.7 and 2.8.
+                <center><img src = "Team/progress/img/aaron/week2/3d_front_board.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 2.7:</b> 3D view of front side of PCB</center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week2/3d_back_board.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 2.8:</b> 3D view of back side of PCB</center>
+                <br>
+            </ul>
+
+            <h4>Weeks 1-2:</h4>
+            <b>Date:</b> 1/20/2023<br>
+            <b>Total hours:</b> 9<br>
+            <b>Description of project design efforts:</b><br>
+            <ul style = "padding-left:20px">
+				&emsp;&emsp;To start out, I worked on my personal parts to finish the final project proposal, including inserting our inital 
+                five PSSCs. I then worked to update all of my personal information and add it to the team website. 
+                <br>
+                <br>
+                &emsp;&emsp;I then worked with Dan to look at different 7-segment displays that we could use for our project. These displays
+                are going to be used in connection with our main "aggregator module" to show the number of available parking spaces in 
+                the garage. The 7-segment display we decided on was a 6.5" tall, red, display. These were decided on because the users
+                for our project will be able to see the value on the display while driving by the garage it is placed in front of. We
+                also decided to order three, since it will allow us to display up to 999 available parking spaces in the garage. An 
+                image of the 7-segment display we chose is shown below, in Figure 1.1.
+                <center><img src = "Team/progress/img/aaron/week1/large_7_seg.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 1.1:</b> Large, red, 7-segment display (https://www.sparkfun.com/products/8530)</center>
+                <br>
+                <br>
+                &emsp;&emsp;I also will be helping with the PCB design, so I downloaded KiCad. After downloading and installing KiCad, I 
+                began to work through the tutorial listed at <a href="https://docs.kicad.org/6.0/en/getting_started_in_kicad/getting_started_in_kicad.html">this link</a>.
+                I was able to make it to the step where I had designed the schematic of a simple system where a battery powers an LED, along with importing
+                that system into a circuit board design and drawing the outline of the board. Shown in Figure 1.2 below is the example system that I created.
+                <center><img src = "Team/progress/img/aaron/week1/kicad_tutorial_pcb.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 1.2:</b> Sample of battery powering LED circuit board</center>
+                <br>
+                &emsp;&emsp;I plan to continue working through the guides that are provided on the KiCad website to familiarize myself with everything needed 
+                for the PCB design in this class.
+                <br>
+                <br>
+                &emsp;&emsp;Finally, I filled out our first purchase request to order 4 of the ultrasonic sonar sensors that we will be using to format-detection
+                cars entering and exiting the garage, as well as submitting it. The purchase request is shown below in Figure 1.3.
+                <center><img src = "Team/progress/img/aaron/week1/purchase_request_1.jpg" width=600></img></center>
+                <br>
+                <center><b>Figure 1.3:</b> Purchase request for ultrasonic sonar sensors</center>
+			</ul>
+            <br>
+
+            
+                      
+        </div>
+	
+		<!-- Instantiate global footer. Any changes to the footer should be made through the top-level file "footer.html" -->
+		<div id="footer"></div>
+    </div>
+</div>
+
+<!--JS-->
+<script src="js/jquery.js"></script>
+<script src="js/jquery-migrate-1.1.1.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#header").load("header.html");
+	$("#menu").load("navbar.html");
+	$("#footer").load("footer.html");
+});
+</script>
+</body>
+</html>

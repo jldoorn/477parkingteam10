@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!--
+This is an example weekly progress report document that team members can use to report their individual progress 
+of their ECE477 senior design projects. Weekly progress reports are expected to follow the general guidelines
+presented in the "Progress Report Policy" document, posted on Brightspace.  
+
+Please create 4 copies of this example, renaming each copy to <PurdueID>.html, where <PurdueID> corresponds to
+the Purdue ITAP Career Account ID given by Purdue to each individual team member. If you have any questions,
+contact course staff.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!--Reconfigurable base tag; used to modify the site root location for root-relative links-->
+<!--<base href="https://engineering.purdue.edu/ece477/StudentWebTemplate/" />-->
+<base href="https://engineering.purdue.edu/477grp10/" /> <!-- Replace the N with your team number-->
+<!--Content-->
+<title>ECE477 Course Documents</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<meta name="author" content="George Hadley">
+<meta name = "format-detection" content = "telephone=no" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<!--CSS-->
+<link rel="stylesheet" href="css/default.css" type="text/css" media="all" />
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/content.css">
+<!--[if IE 6]>
+<link href="default_ie6.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+
+</head>
+<body>
+<div id="wrapper_site">
+    <div id="wrapper_page">
+	<!-- Instantiate global site header.-->
+	<div id="header"></div>
+		<!-- Instantiate site global navigation bar.-->
+		<div id="menu"></div>
+	
+		<!-- Instantiate a page banner image. Page banner images should be 1100x350px and should be located within the local
+			img folder located at this directory level. -->
+		<div id="banner">
+			<img src="Files/img/BannerImgExample.jpg"></img>
+		</div>
+	
+		<!-- Instantiate "tools" needed for a page. Tools are premade functional blocks that can be used to build a page,
+			and include things such as a file lister (for listing out homework assignments or tutorials)
+		-->
+		<div id="content">
+            <h2>Progress Report for Jonthan Doorn</h2>
+			<h4>Week 5:</h4>
+            <b>Date:</b> Friday, February 10, 2023<br>
+            <b>Total hours:</b> 8<br>
+            <b>Description of project design efforts:</b><br>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Prepared demo of bidirectional messaging between two STM32F0 microcontrollers</li>
+				<li>Modified wifi driver to be more stable and require less codebase tweaking for install.</li>
+				<li>Planned for week 7 demo goals</li>
+			</ul>
+			<h5>Reporting efforts</h5>
+			<ul>
+				<li>Reviewed Bill of Materials for connectivity components</li>
+			</ul>
+			
+
+			My first accomplishment this week was seting up a codebase to handle uart traffic on the 
+			STM32 microcontroller. I first created a fifo buffer API, then initialized fifo buffers to 
+			collect incoming UART traffic. I set up interrupt handlers to push RX UART data into the 
+			buffers. I then wrote utilities to handle reading from these buffers, for example, routines
+			to block and read from a buffer until a specified character is seen, and a blocking read until
+			a given number of bytes are read.
+			<br><br>
+			With these utilities, I was able to write a response handler to block on traffic from the 
+			Wifi modules, then parse into received packet data and module status updates. I also wrote initialization
+			routines for the Wifi module, sending commands necessary for creating a Wifi access point and 
+			accepting UDP packets, and checking module responses for success in between commands.
+			<br><br>
+			I then put together two tests, one for mass packet reception, and one for mass packet transmission between
+			Wifi modules. I measured the current drawn by the modules during these tests to include in the component 
+			analysis report. 
+			<br><br>
+			<h5>Figures</h5> 
+			<div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_driver_arch.png"></img><br>
+				<b>Figure 6:</b> Wifi driver architecture
+			</div>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_test.jpg"></img><br>
+				<b>Figure 7:</b> Breadboard setup for wifi current draw test
+			</div>
+            <br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/uart_rx_handler.png"></img><br>
+				<b>Figure 8:</b> UART RX Interrupt Handler
+			</div>
+            <br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_control_seq.png"></img><br>
+				<b>Figure 9:</b> Wifi Driver Control Sequence
+			</div>
+            <br>
+
+			<h5>Citations</h5> 
+			<ul>
+				<li>
+					https://espressif-docs.readthedocs-hosted.com/projects/esp-at/en/release-v2.2.0.0_esp32/AT_Command_Set/Basic_AT_Commands.html
+				</li>
+			</ul>
+
+
+			<h4>Week 4:</h4>
+            <b>Date:</b> Friday, February 3, 2023<br>
+            <b>Total hours:</b> 15<br>
+            <b>Description of project design efforts:</b><br>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Migrated Wifi module driver code from Python prototype to embedded c</li>
+				<li>Setup development environment for microcontroller in STM32CubeIDE</li>
+				<li>Wrote interrupt handlers to buffer UART data, utility functions to streamline UART IO interractions</li>
+				<li>Conducted max current draw testing on Wifi chips in idle, transmit, and receive modes</li>
+			</ul>
+			<h5>Reporting efforts</h5>
+			<ul>
+				<li>Completed component analysis for radio module </li>
+			</ul>
+			
+
+			My first accomplishment this week was seting up a codebase to handle uart traffic on the 
+			STM32 microcontroller. I first created a fifo buffer API, then initialized fifo buffers to 
+			collect incoming UART traffic. I set up interrupt handlers to push RX UART data into the 
+			buffers. I then wrote utilities to handle reading from these buffers, for example, routines
+			to block and read from a buffer until a specified character is seen, and a blocking read until
+			a given number of bytes are read.
+			<br><br>
+			With these utilities, I was able to write a response handler to block on traffic from the 
+			Wifi modules, then parse into received packet data and module status updates. I also wrote initialization
+			routines for the Wifi module, sending commands necessary for creating a Wifi access point and 
+			accepting UDP packets, and checking module responses for success in between commands.
+			<br><br>
+			I then put together two tests, one for mass packet reception, and one for mass packet transmission between
+			Wifi modules. I measured the current drawn by the modules during these tests to include in the component 
+			analysis report. 
+			<br><br>
+			<h5>Figures</h5> 
+			<div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_driver_arch.png"></img><br>
+				<b>Figure 6:</b> Wifi driver architecture
+			</div>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_test.jpg"></img><br>
+				<b>Figure 7:</b> Breadboard setup for wifi current draw test
+			</div>
+            <br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/uart_rx_handler.png"></img><br>
+				<b>Figure 8:</b> UART RX Interrupt Handler
+			</div>
+            <br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/wifi_control_seq.png"></img><br>
+				<b>Figure 9:</b> Wifi Driver Control Sequence
+			</div>
+            <br>
+
+			<h5>Citations</h5> 
+			<ul>
+				<li>
+					https://espressif-docs.readthedocs-hosted.com/projects/esp-at/en/release-v2.2.0.0_esp32/AT_Command_Set/Basic_AT_Commands.html
+				</li>
+			</ul>
+
+
+			<h4>Week 3:</h4>
+            <b>Date:</b> Wednesday, January 25, 2023<br>
+            <b>Total hours:</b> 11<br>
+            <b>Description of project design efforts:</b><br>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Designed an UDP API to communicate events between CDMs and the AM (Figure 3)</li>
+				<li>Implemented this API in Python and performed simulations (Figure 4)</li>
+				<li>Flashed firmware to wifi modules</li>
+				<li>Created a demo for wifi connectivity in Python showcasing UDP API functionality (Figure 5)</li>
+			</ul>
+
+			In terms of demos and prototypes, the first step was creating a demo to run on UDP between two open 
+			ports local to my laptop. I had to research how to open UNIX sockets with python to accomplish this.
+			Following my research of python sockets, I also created python serializers and deserializers for the API
+			I designed. Once I was able to simulate events locally, I then created an interface to work with the UART
+			wifi modules that will be used in our deliverable.
+			<br><br>
+			In order to create this interface, I utilized the AT Command documentation for the ESP-01 wifi module based
+			on the ESP 8266 Wifi MCU. Essentially, I made a routine to set up a wifi network, then transitioned into an infinite loop
+			that parsed messages from the Wifi modem, separating incoming data from status messages. I envision a similar event
+			handler on the final product, however the handler on our micro will not run continuously, only when there is data waiting
+			from our Wifi modem.
+			<br><br>
+			I verified that I was getting the same results using the UART wifi modules as I was getting with the localhost UDP simulation.
+			<h5>Figures</h5> 
+			<div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/apispec.jpg"></img><br>
+				<b>Figure 3:</b> Hand drawn API specification
+			</div>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/udp_git_hist.png"></img><br>
+				<b>Figure 4:</b> GitHub commit history for API prototyping
+			</div>
+            <br>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/udp_sim_sc.jpg"></img><br>
+				<b>Figure 5:</b> Output of UDP simulation
+			</div>
+            <br>
+
+			<h5>Citations</h5> 
+
+
+            
+            <h4>Weeks 1-2:</h4>
+            <b>Date:</b> Friday, January 20, 2023<br>
+            <b>Total hours:</b> 8<br>
+            <b>Description of project design efforts:</b><br>
+            I will break down my project efforts into two categories, and leave figures at the end of each report
+			
+			<h5>Reporting efforts</h5>
+			<ul>
+				<li>Edited project website to include my bio and position information</li>
+				<li>Added my responsibilities to final project proposal</li>
+				<li>Proofread final project proposal</li>
+				<li>Produced block diagram for Functional Specification (Figure 1)</li>
+				<li>Completed "Expected Usage Case" section of Functional Specification</li>
+			</ul>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Hand drawing of block diagram (Figure 2)</li>
+				<li>Began planning software event handlers and user stories</li>
+				<li>Visited Joe to enquire about wireless networking, discovered that Wifi connectivity would be the best option for us to start with</li>
+				<li>Acquired three wifi modules</li>
+			</ul>
+			<h5>Figures</h5> 
+			<div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/bd.png"></img><br>
+				<b>Figure 1:</b> Digital version of our project's high level block diagram
+			</div>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/hand_bd.jpg"></img><br>
+				<b>Figure 2:</b> Hand drawn, first iteration of high level block diagram
+			</div>
+            <br>
+
+            
+        </div>
+	
+		<!-- Instantiate global footer. Any changes to the footer should be made through the top-level file "footer.html" -->
+		<div id="footer"></div>
+    </div>
+</div>
+
+<!--JS-->
+<script src="js/jquery.js"></script>
+<script src="js/jquery-migrate-1.1.1.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#header").load("header.html");
+	$("#menu").load("navbar.html");
+	$("#footer").load("footer.html");
+});
+</script>
+</body>
+</html>
