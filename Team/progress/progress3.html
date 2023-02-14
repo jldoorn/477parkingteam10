@@ -58,9 +58,42 @@ contact course staff.
 		-->
 		<div id="content">
             <h2>Progress Report for Dan English</h2>
+			<h4>Week 6:</h4>
+            <b>Date:</b> 02.13.2023 <br>
+            <b>Total hours:</b> 3 (in progress) <br>
+            <b>Description of project design efforts:</b><br>
+            <p style = "padding-left:20px">
+				<br>
+				&emsp; I've been working on the AM schematic.
+				<br>
+				<br>
+
+				Notes:
+				<ul style="padding-left:60px">
+					<li>added OLED, level shifter, keypad, 7-segment to schematic</li>
+					<li>waiting for Aaron to finish micro circuits</li>
+					<li>went to ECE shop to identify smd MOSFETs to use - 2N7002</li>
+					<li>need to start mini-PCB for connecting 7-segments</li>
+					<li>need to test power circuits integration + driving 7-segs</li>
+				</ul>
+			
+			
+				<br>
+
+				<div class = "line"></div>
+			
+
+				<br>
+			
+			
+			
+			
+			
+			
+			<h2>Progress Report for Dan English</h2>
 			<h4>Week 5:</h4>
-            <b>Date:</b> 02.09.2023 <br>
-            <b>Total hours:</b> 9 (in progress)<br>
+            <b>Date:</b> 02.10.2023 <br>
+            <b>Total hours:</b> 12 <br>
             <b>Description of project design efforts:</b><br>
             <p style = "padding-left:20px">
 				<br>
@@ -83,7 +116,7 @@ contact course staff.
 
 				<br>
 				<br>
-				<center><img src = "Team/progress/img/Dan/Week4/wave01.jpg" width = 400></img></center>
+				<center><img src = "Team/progress/img/Dan/Week4/wave01.jpg" width = 500></img></center>
 				<br>
 				<center><b>Figure 5.1:</b> Oscilloscope Capture of the Trigger Signal being driven High for 10us</center>
 				<br>
@@ -96,20 +129,104 @@ contact course staff.
 				<center><b>Figure 5.2:</b> Oscilloscope Captures of MOSFET Non-Ideal Switching and Ringing</center>
 				<br>
 				<br>
-				<center><img src = "Team/progress/img/Dan/Week4/wave06.jpg" width = 400></img></center>
+				<center><img src = "Team/progress/img/Dan/Week4/wave06.jpg" width = 500></img></center>
 				<br>
 				<center><b>Figure 5.3:</b> Oscilloscope Capture of the Echo Signal being driven High by the Sensor</center>
 				<br>
 				<br>
-				&emsp; This week, I began designing the schematic for the Aggregator Module (AM), which will be used for the 
-				PCB layout. 
+				&emsp; The large seven-segment displays that we ordered for our project arrived this week, shown in Figure 5.4. Upon inspection,
+				they look similar to the pictures on the website, which is a good sign. There are a couple connections lacking 
+				some solder, but that should be an easy fix. They are definitely large enough to work for our design, and we 
+				will see how well the light up next week. 
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week5/sevenSeg_front.jpg" width = 500></img></center>
+				<br>
+				<center><b>Figure 5.4:</b> Large 6.5" Seven-Segment Display (Front)</center>
+				<br>
+				<br>
+				One issue I discovered while taking a closer look is how to connect wires
+				to the display. Currently, as shown in Figure 5.5, there are exposed copper traces on the back side of the display.
+				There are eight strips, which connect to the ground or lower side of each segment's LED. Additionally, there is a double-wide
+				trace in the middle, which connects to the common anode of all the LEDs. 
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week5/sevenSeg_back.jpg" width = 500></img></center>
+				<br>
+				<center><b>Figure 5.5:</b> Large 6.5" Seven-Segment Display (Back)</center>
+				<br>
+				<br>
+				The basic, raw plan is to solder wires directly to 
+				each trace; however, this will not be stable mechanically and is susceptible to electrical disconnection. Upon looking online,
+				I found a separate LED driver and controller mini-PCB that is often sold with this project. In the tutorial found  
+				<a href="https://learn.sparkfun.com/tutorials/large-digit-driver-hookup-guide?_ga=2.92113112.372041448.1676052857-1902521822.1675965340" target="_blank">here</a>
+				,this mini-PCB is connected to the seven-segment board using a Castellated soldering method, shown in Figure 5.6. 
+				Notice the electrical soldering connections at the bottom of the board (shown on the left of the image) and the two 
+				NC soldered connections at the top of the board (shown on the right side of the mini-PCB image); these NC soldered connections
+				serve no electrical purpose, but are only there for mechanical support of the LED driver board attached to the seven-segment display.
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week5/Large_Digit_Driver_Tutorial-05.jpg" width = 400></img></center>
+				<br>
+				<center><b>Figure 5.6:</b> Castellated Soldering of LED Driver Board to Seven-Segment Display</center>
+				<br>
+				<br>
+				While buying and utilizing this separate
+				board would take away from one of our PSSCs, we can instead design our own mini-PCB LED driver in a similar manner. Thus,
+				our PSSC would still be valid, and we would be able to employ the Castellated soldering of the mini-PCB to the seven-segment, which
+				provides a much stronger mechanical and electrical connection (which is why they recommended doing it in the tutorial). Although
+				adding another PCB design to our project will increase the amount of work, it will not be as bad as it seems, since this will be a really
+				simple design involving only the connection ports to our main Aggregator Module (AM), the LED driver chip, and the connection vias
+				for the Castellated soldering. Additionally, the LED driver circuit will be removed from the AM PCB, which will make that design
+				slightly easier/less work. 
 
 				<br>
-				Notes: 
-				<br>talked to staff about soldering large 7seg, decide to design own pcb with led driver and Castellated soldering mounting holes;
-				<br>went with Aaron to ECE shop to look at available resistors, caps, induc; also saw leds and grabbed some switches, buttons for user interfaces and a dc plug mount for pcb
-				<br>talked to joe about wire headers for connecting pcb to 7seg with crimping wires
 				<br>
+				&emsp; Another thing I did this week was go to the ECE Shop with Aaron to pick out some parts for the user interface
+				and debugging interface that we will include on both the AM and CDM PCBs. For the AM, there will be a 16-button keypad
+				and 2-line OLED display that will be used for the user interface during operation; however, we want to add some
+				tiny surface mount LEDs to use for status (e.g. a green LED to indicate the module is running properly). For the CDM,
+				we will use tiny surface mount LEDs for status as well in addition to four switches for the user to use. Three of
+				the switches will be used to set the "serial number" of the CDM, which can then be added to the overall network
+				via the AM configuration interface. The last switch will be used to set the primary and secondary of the CDM plan.
+				
+				<br>
+				<br>
+				&emsp; I worked with my team to come up with a system for the CDMs. There will be two boards located at the entrance 
+				or exit that will act as one CDM. One of the boards will be the primary, which will communicate the 
+				car detection data to the AM (i.e. whether a car entered or exited the garage). The other board will be the secondary 
+				and will only communicate its sensor data to the primary. This limits the amount of traffic over wifi that the AM will have to
+				handle, and using two boards with two sensors at each entrance/exit will allow for more accurate car detection and
+				will be able to track both cars entering and exiting that same entrance, which provides flexibility to the implementation of the
+				system. The boards will be placed on opposite walls of the ramp, and offset along the ramp, with the primary being placed closer towards the garage
+				and the secondary closer to the exit. This way, if the secondary detects a car first and then the primary detects a car, the CDM will
+				know that the car entered the garage, and vice versa for exiting the garage.
+
+
+				<br>
+				<br>
+
+				&emsp; Lastly for this week, I began designing the schematic for the Aggregator Module (AM), which will be used for the 
+				PCB layout. I am using KiCad for the schematic and PCB design. I wasn't able to make as much progress as I would have liked for this week,
+				but I did figure out a lot of tricks and am much more familiar with the software now, so I think I will be a lot more efficient next week. 
+				My plan is to finish the schematic during next week and begin looking at the footprint. Even though we made some changes to design and 
+				components this week, which also contributed to me having to redesign some parts of my schematic, the team and I believe to have a fairly
+				finalized plan now. Thus, I should be able to finish the schematic without many more major changes. In Figure 5.7, I have included 
+				my progress so far on the schematic. The parts I have included so far are the DC plug through-hole connector, the 12V to 5V buck converter,
+				the 5V to 3.3V linear regulator, the through-hole configuartion for the ESP-01S wifi chip, the through-holes for the connector that 
+				will be used to connect the PCB to the large seven-segment display, and our STM32F091 microcontroller.
+
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week5/AM_schematic_progress.jpg" width = 700></img></center>
+				<br>
+				<center><b>Figure 5.7:</b> My KiCad Schematic of the Aggregator Module (so far)</center>
+				<br>
+				<br>
+				&emsp; Next week, my plan is to finish the schematic for the AM, begin looking at and messing around with the footprint, and
+				to test our power system integrated with our other parts.
+				<br>
+				
 			
 			
 			

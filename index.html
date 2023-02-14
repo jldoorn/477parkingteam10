@@ -64,20 +64,25 @@ This website was based upon a number of source materials, which are elaborated u
 			such as adding and removing Car Detector Modules. The keypad will function by the microcontroller using a row column 
 			matrix to determine which button is pressed. Wireless communication will be done using a WiFi 
 			module on the Aggregator Module, as well as the Car Detector Modules, with which the microcontroller will interface
-			in order to send and receive data packets. A laptop charger will be used to power the Aggregator Module with a 
-			switching regulator chip and a linear regulator chip to step down the input voltage. A portable battery bank will be used to	
+			in order to send and receive data packets. A laptop charger, with DC output 12V 5A, will be used to power the Aggregator Module with a 
+			switching regulator chip and a linear regulator chip to step down the input voltage. A portable battery bank, with DC output 5V 2A, will be used to	
 			power the Car Detector Module with a linear regulator chip to step down the input voltage.
 			<br>
 			<br>
-			One bonus design goal for our project will be to design our own 12V to 3.3V DC-DC switching regulator circuit instead of using a dedicated chip.
-			Another bonus design goal will be to design our own level shifter circuit for communicating between 5V and 3.3V instead of using a dedicated chip.
-			A third bonus design goal will be to develop a website where the number of available spaces will be displayed and updated.
+			Bonus Design Goals:
+			<ol>
+				<li>(Hardware) One bonus design goal for our project will be to design our own 12V to 5V DC-DC switching regulator circuit.</li>
+				<li>(Hardware) Another bonus design goal will be to design our own level shifter circuit for communicating between 5V and 3.3V.</li>
+				<li>(Software) A third bonus design goal will be to develop a website where the number of available spaces will be displayed and updated.</li>
+			</ol>
+			<br>
+			
             
             <h2>Project Specific Success Criteria (PSSCs):</h2>   
                 <ol>
                     <li>PSSC #1 (Hardware): An ability for the microcontroller to trigger and receive data from an ultrasonic sensor using two GPIO pins.</li>
                     <li>PSSC #2 (Hardware): An ability for our microcontroller to send data to an OLED screen using SPI.</li>
-                    <li>PSSC #3 (Hardware): An ability to use a row column matrix to determine what value is pressed on a 12 button keypad.</li>
+                    <li>PSSC #3 (Hardware): An ability for our microcontroller to use a row column matrix to determine what value is pressed on a 12 button keypad.</li>
                     <li>PSSC #4 (Hardware): An ability for our microcontroller to drive a 7-segment display using an SPI shift register and MOSFETs.</li>
                     <li>PSSC #5 (Hardware): An ability to interface between an ESP8266 WiFi wireless module and the microcontroller using the UART protocol.</li>
                 </ol>
