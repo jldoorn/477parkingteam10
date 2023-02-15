@@ -29,5 +29,7 @@ typedef struct {
 
 } message_t;
 
+void debug_message(message_t * msg, char * messagebuff);
+message_t * get_message();
 
 #endif /* INC_MESSAGES_H_ */
