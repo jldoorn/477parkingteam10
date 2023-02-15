@@ -36,6 +36,8 @@ extern "C" {
 #include "stm32f0xx_ll_cortex.h"
 #include "stm32f0xx_ll_utils.h"
 #include "stm32f0xx_ll_pwr.h"
+#include "stm32f0xx_ll_spi.h"
+#include "stm32f0xx_ll_tim.h"
 #include "stm32f0xx_ll_usart.h"
 #include "stm32f0xx_ll_gpio.h"
 
@@ -71,6 +73,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define PROX_TRIG_Pin LL_GPIO_PIN_10
+#define PROX_TRIG_GPIO_Port GPIOA
+#define PROX_MEAS_Pin LL_GPIO_PIN_11
+#define PROX_MEAS_GPIO_Port GPIOA
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  4 bits for subpriority */
