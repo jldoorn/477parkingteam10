@@ -242,6 +242,7 @@ esp_response_enum esp_debug_response(esp_handle_t *esp) {
 
 void esp_send_data(char *buf, int n, esp_handle_t *esp, int multi) {
 	char tmp = 0;
+
 	if (multi) {
 		esp_send_mux_init(n, esp->usartx);
 	} else {

@@ -12,11 +12,12 @@
 extern volatile int uscounter;
 
 static inline void uscounter_start(){
-	LL_TIM_DisableCounter(TIM2);
+
+	LL_TIM_EnableCounter(TIM2);
 
 }
 static inline void uscounter_stop(){
-	LL_TIM_EnableCounter(TIM2);
+	LL_TIM_DisableCounter(TIM2);
 }
 
 static inline void uscounter_clear() {

@@ -27,6 +27,8 @@
 #include "string.h"
 #include "uartstream.h"
 #include "messages.h"
+#include "asmutils.h"
+#include "sonar.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -115,6 +117,9 @@ int main(void) {
 	MX_SPI1_Init();
 	MX_TIM2_Init();
 	/* USER CODE BEGIN 2 */
+	LL_USART_EnableIT_RXNE(USART5);
+	LL_USART_EnableIT_RXNE(USART7);
+	LL_TIM_EnableIT_UPDATE(TIM2);
 	esp_handle_t esp_handle;
 	esp_handle.debug = USART5;
 	esp_handle.fifo = &usart7_rx_fifo;
@@ -130,6 +135,13 @@ int main(void) {
 #endif
 
 #ifdef ESP_STA
+
+//  while (1) {
+//
+//  		sprintf(charbuff, "Got distance: %d\r\n", sonar());
+//  		writestring(charbuff, USART5);
+//  		nano_wait(100000000);
+//  	}
   writestring("Bootup start!!\r\n", USART5);
 	esp_setup_join("myap", "12345678", &esp_handle);
 	char tmp;
@@ -145,6 +157,8 @@ int main(void) {
 //    while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
 //    writestring("Send success!!\r\n", USART5);
 #endif
+
+
 
 	/* USER CODE END 2 */
 
@@ -178,7 +192,7 @@ int main(void) {
 				espmsg->module_id = 1;
 				  espmsg->command = API_ACK;
 				  esp_send_data((char * ) espmsg, sizeof(espmsg), &esp_handle, 1);
-				  writestring("Main: sent ping\r\n", USART5);
+				  writestring("Main: sent Ack\r\n", USART5);
 				break;
 			default:
 				writestring("Main: got odd input\r\n", USART5);
@@ -194,6 +208,9 @@ int main(void) {
 				espmsg->command = API_PING;
 				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 				writestring("Main: sent ping\r\n", USART5);
+				while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+								;
+							writestring("Send success!!\r\n", USART5);
 				break;
 			case 'M':
 				espmsg->module_id = 2;
@@ -201,16 +218,16 @@ int main(void) {
 				espmsg->body.distance = sonar();
 				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 				writestring("Main: sent distance\r\n", USART5);
+				while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+								;
+							writestring("Send success!!\r\n", USART5);
 				break;
 			default:
 				writestring("Main: got odd input\r\n", USART5);
 				break;
 			}
-			esp_send_data(charbuff, str_length, &esp_handle, 0);
 #endif
-			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
-				;
-			writestring("Send success!!\r\n", USART5);
+
 		}
 		/* USER CODE END WHILE */
 
@@ -351,7 +368,7 @@ static void MX_TIM2_Init(void) {
 	/* USER CODE BEGIN TIM2_Init 1 */
 
 	/* USER CODE END TIM2_Init 1 */
-	TIM_InitStruct.Prescaler = 47;
+	TIM_InitStruct.Prescaler = 7;
 	TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
 	TIM_InitStruct.Autoreload = 9;
 	TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
