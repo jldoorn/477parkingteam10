@@ -1,2 +1,10 @@
 venv/
 *.pyc
+/USSensor/CMSIS/*
+/USSensor/Debug/*
+/USSensor/.settings/*
+/USSensor/StdPeriph_Driver/*
+/USSensor/.cproject
+/USSensor/.project
+/USSensor/LinkerScript.ld
+/USSensor/USSensor.cfg
