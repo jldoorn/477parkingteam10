@@ -130,6 +130,7 @@ int main(void) {
 #endif
 
 #ifdef ESP_STA
+  writestring("Bootup start!!\r\n", USART5);
 	esp_setup_join("myap", "12345678", &esp_handle);
 	char tmp;
 	writestring("Connect success!!\r\n", USART5);
