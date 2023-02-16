@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "fifo.h"
 #include "ustimer.h"
+#include "keypadtimer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -193,6 +194,11 @@ void TIM2_IRQHandler(void)
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+    TIM6->SR &= ~TIM_SR_UIF;
+    rows = read_rows();
+    update_history(col, rows);
+    col = (col + 1) & 3;
+    drive_column(col);
 
   /* USER CODE END TIM6_DAC_IRQn 0 */
 

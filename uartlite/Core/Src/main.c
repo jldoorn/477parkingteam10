@@ -30,6 +30,8 @@
 #include "asmutils.h"
 #include "sonar.h"
 #include "spidisp.h"
+#include "keypadtimer.h"
+#include "keypad.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -37,7 +39,8 @@
 fifo_t usart5_rx_fifo = { 0 };
 fifo_t usart7_rx_fifo = { 0 };
 volatile int uscounter = 0;
-
+volatile int rows = 0;
+volatile uint8_t col = 0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -124,6 +127,7 @@ int main(void)
 	LL_USART_EnableIT_RXNE(USART5);
 	LL_USART_EnableIT_RXNE(USART7);
 	LL_TIM_EnableIT_UPDATE(TIM2);
+	LL_TIM_EnableIT_UPDATE(TIM6);
 	esp_handle_t esp_handle;
 	esp_handle.debug = USART5;
 	esp_handle.fifo = &usart7_rx_fifo;
@@ -131,6 +135,8 @@ int main(void)
 	message_t *espmsg = get_message();
 	int str_length = 0;
 	char charbuff[1024] = { 0 };
+	writestring("Starting keypad test\r\n", USART5);
+	keypad();
 
 #ifdef ESP_AP
   	writestring("Startinig init routine\r\n", USART5);
