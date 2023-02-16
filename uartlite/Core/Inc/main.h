@@ -73,6 +73,22 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define KEYPADI0_Pin LL_GPIO_PIN_2
+#define KEYPADI0_GPIO_Port GPIOC
+#define KEYPADI1_Pin LL_GPIO_PIN_3
+#define KEYPADI1_GPIO_Port GPIOC
+#define KEYPADI2_Pin LL_GPIO_PIN_4
+#define KEYPADI2_GPIO_Port GPIOC
+#define KEYPADI3_Pin LL_GPIO_PIN_5
+#define KEYPADI3_GPIO_Port GPIOC
+#define KEYPADO0_Pin LL_GPIO_PIN_6
+#define KEYPADO0_GPIO_Port GPIOC
+#define KEYPADO1_Pin LL_GPIO_PIN_7
+#define KEYPADO1_GPIO_Port GPIOC
+#define KEYPADO2_Pin LL_GPIO_PIN_8
+#define KEYPADO2_GPIO_Port GPIOC
+#define KEYPADO3_Pin LL_GPIO_PIN_9
+#define KEYPADO3_GPIO_Port GPIOC
 #define PROX_TRIG_Pin LL_GPIO_PIN_10
 #define PROX_TRIG_GPIO_Port GPIOA
 #define PROX_MEAS_Pin LL_GPIO_PIN_11
