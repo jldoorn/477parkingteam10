@@ -52,6 +52,73 @@ contact course staff.
 		-->
 		<div id="content">
             <h2>Progress Report for Jonthan Doorn</h2>
+
+			<h4>Week 6:</h4>
+            <b>Date:</b> Friday, February 17, 2023<br>
+            <b>Total hours:</b> 12<br>
+            <b>Description of project design efforts:</b><br>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Integrated proximity sensor code into main codebase</li>
+				<li>Created flowcharts for direction detection from a pair of proximity sensors at each CDM</li>
+				<li>Prepared demo transmitting proximity sensor data over Wifi network</li>
+			</ul>
+			<h5>Reporting efforts</h5>
+			<ul>
+				<li>Prepared Software Formalization </li>
+			</ul>
+
+			The first task I took on this week was to import the proximity sensor code which Aaron had developed into 
+			the codebase containing the wifi demos. There were some pin conflicts between the two projects, which I 
+			corrected within STM32CubeMX. The current pinout of our microcontroller can be seen in figure 13. Additionally,
+			I discovered that the distance measurements on my microcontroller were not consistent with the distance measurements
+			from the demo running on Aaron's microcontroller. This is because the operation of the proximity sensor relies on 
+			measuring the elapsed time from a proximity sensor trigger to the time the proximity sensor hears the echo from its trigger.
+			The clock on Aaron's microcontroller was set to 48MHz, while the clock on the microcontroller I had been using for 
+			Wifi demos was set to 8MHz. This resulted in shorter distances being reported on my microcontroller. Once I adjusted
+			the timer handlers to configure the timers to count microseconds from an 8MHz clock signal, the demo behaved as expected.
+
+			<br><br>
+			Additionally, I produced in-depth flowcharts of the interrupt handlers that have been used in the demos so far, 
+			and extended these flowcharts to include a method to handle proximity sensor data from the CDM and later its slave module
+			to produce API messages indicating the direction of travel of vehicles passing through the entrance where each
+			CDM is installed. Flowcharts indicating the necessary manipulation of global state variables to produce a 
+			flow message can be found in figures 11 and 12.
+
+			<br><br>
+			I also spent a couple hours helping Fred integrate his keypad code into the main codebase and navigate pin conflicts that
+			overlapped with the UART which the wifi modules are attached. We were able to use STM32CubeMX to quickly initialize a timer
+			and GPIO pins suitable for the reading of input from a pinpad. This was one of the final integrations necessary to 
+			enable a full system prototype. The final touch will be the seven-segment display module. Until then, we will be able
+			to create a demo of our system using a small LCD display for both AM configuration and to display free parking spots.
+
+			<br><br>
+			Finally, I prepared several block diagrams detailing the architecture of the codebase for our parking tracking system, which
+			will be used in the Software Formalization report. A high level overview of the software progress so far can be seen in 
+			figure 10.
+
+			<h5>Figures</h5> 
+			<div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/program_blocks.png"></img><br>
+				<b>Figure 10:</b> High level formal block diagram, each subset is broken out in further detail in the Software Formalization report
+			</div>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/CDMHandlers.png"></img><br>
+				<b>Figure 11:</b> Flowcharts indicating how data is handled from peripheral interupts
+			</div>
+            <br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/slavehandler.png"></img><br>
+				<b>Figure 12:</b> Routine to be run when a message is received from the CDM's slave module
+			</div>
+            <br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/cubemx_after_pinpad.png"></img><br>
+				<b>Figure 13:</b> Pinout after integration of proximity sensor and keypad into the main codebase
+			</div>
+            <br>
+
 			<h4>Week 5:</h4>
             <b>Date:</b> Friday, February 10, 2023<br>
             <b>Total hours:</b> 8<br>
