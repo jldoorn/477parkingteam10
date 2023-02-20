@@ -59,23 +59,68 @@ contact course staff.
 		<div id="content">
             <h2>Progress Report for Dan English</h2>
 			<h4>Week 6:</h4>
-            <b>Date:</b> 02.13.2023 <br>
-            <b>Total hours:</b> 3 (in progress) <br>
+            <b>Date:</b> 02.17.2023 <br>
+            <b>Total hours:</b> 12 <br>
             <b>Description of project design efforts:</b><br>
             <p style = "padding-left:20px">
 				<br>
-				&emsp; I've been working on the AM schematic.
-				<br>
-				<br>
+				&emsp; During this week, I spent most of my time working on the schematic for our PCB. Since we have multiple PCB designs
+				for our project, Aaron and I decided to split up the work. I created the PCBs for the Aggregator Module (AM) and the 
+				7-Segment Module (7SM), and Aaron worked on the PCB for the Car Detector Module (CDM). Additionally, since the AM and CDM
+				have the same microcontroller, we decided that only one of us should create all the extra circuits associated with that chip 
+				(external clock, reset button, etc.). So Aaron created those circuits, and I will copy and paste his work into my AM design.
+				The 7SM was not part of our original design, but added once we received our large 6.5" 7-segment displays. The 7SM is a 
+				simple, small PCB that will contain a single LED shift register + DMOS sink driver chip, input connections, output connections
+				(to be chained with the other 7-segment), and castellated vias located on the edge of the board, which will be used for 
+				connecting the data and power lines to the actual 7-segment board. 
 
-				Notes:
-				<ul style="padding-left:60px">
-					<li>added OLED, level shifter, keypad, 7-segment to schematic</li>
-					<li>waiting for Aaron to finish micro circuits</li>
-					<li>went to ECE shop to identify smd MOSFETs to use - 2N7002</li>
-					<li>need to start mini-PCB for connecting 7-segments</li>
-					<li>need to test power circuits integration + driving 7-segs</li>
-				</ul>
+				<br>
+				<br>
+				&emsp; For the AM board, I added the OLED, level shifter, keypad, and external 7-segment connections to the schematic. The updated
+				schematic is shown in Figure 6.1. For the OLED, I was able to find the correct symbol and footprint for the part we are using, which
+				was difficult because there are a lot of 2-line OLED displays out there, but they all have different pin configurations. The keypad 
+				is a simple 8-pin through hole configuration with 1k ohm resistors between the pin and the microcontroller. When desiging the footprint,
+				I plan on placing a mountine hole or two under the keypad to support it and the whole PCB when the user is pressing buttons. For 
+				the 7-segment connections, we are using a 10-pin header that will go out of the board and into the 7SM. We will use 2 pins for each
+				power (12V, 5V, GND). The other pins will be used for the data lines going to the LED driver: SER_IN, SCLK, RCLK, and EN. 
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week6/AM_schematic.JPG" width = 800></img></center>
+				<br>
+				<center><b>Figure 6.1:</b> Schematic of AM in KiCad</center>
+				<br>
+				<br>
+				&emsp; The level shifter will be unidirectional from the 3.3V outputs of the micro to the 5V inputs for the LED driver chip. As part of our bonus
+				design goal, I designed my own level shifter. This involved testing multiple resistor and MOSFET configurations while looking 
+				at the output on the oscilloscope. In the end, I tied the 5V data port high with a 2.2K ohm resistor, and connected the drain 
+				of the MOSFET to the same data port. The source of the FET is connected to ground, and the microcontroller connects to the gate via
+				a 470 ohm resistor. In this way, when the microcontroller outputs a logic high, the gate threshold voltage is achieved, which turns on
+				the MOSFET and drives the 5V data pin to logic low. When the microcontroller outputs a logic low, the MOSFET is off, and the pull-up 
+				resistor drives the 5V data line to logic high.  
+
+				<br>
+				<br>
+				&emsp; The schematic for the 7SM is shown in Figure 6.2. The main component is the LED driver, shown 
+				in the middle. This takes the input data lines and drives the vias connected to each segment accordingly.
+				The power and data lines are also passed to an output connector header so that multiple 7SMs can be chained
+				together, which we will do for both of our 7-segments. This will create two 8-bit shift registers connected in series,
+				so the first byte written will go to the far 7SM and the second byte will go the closer 7SM. 
+
+				<br>
+				<br>
+				<center><img src = "Team/progress/img/Dan/Week6/7SM_schematic.JPG" width = 700></img></center>
+				<br>
+				<center><b>Figure 6.2:</b> Schematic of 7SM in KiCad</center>
+
+
+				<br>
+				<br>
+				&emsp; My goals for next week are to convert the schematics for both the AM and 7SM to their respective footprints. 
+				The main things will be figuring out the routing for the AM, especially the microcontroler I/O pin connections,
+				which I will get from the header files in our embedded code, and the castellated vias for the 7SM, since 
+				that is not standard. After I finish the footprints, I want to do some testing on the power electronics for our boards,
+				specifically testing the DC-DC converters with our microcontroller + other components, and I also want to 
+				test designing my own DC-DC converter.
 			
 			
 				<br>
