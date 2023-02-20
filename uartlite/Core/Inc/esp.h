@@ -4,8 +4,9 @@
  *  Created on: Feb 1, 2023
  *      Author: jdoorn
  */
+#include "main.h"
 #include "fifo.h"
-#include "stm32f091xc.h"
+
 
 #ifndef INC_ESP_H_
 #define INC_ESP_H_
@@ -15,7 +16,6 @@
 #define ESP_MUX_SINGLE		0
 #define ESP_MUX_MULTI		1
 
-#define ESP_AP
 
 
 typedef enum {ESP_STATUS, ESP_DATA, ESP_RESULTS, ESP_READY, ESP_PARSE_FAIL, ESP_OK, ESP_ERROR, ESP_SEND_OK, ESP_SEND_FAIL, ESP_SET_OK} esp_response_enum;

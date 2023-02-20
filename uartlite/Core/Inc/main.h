@@ -57,6 +57,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define ESP_STA
 
 /* USER CODE END EC */
 

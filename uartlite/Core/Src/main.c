@@ -246,6 +246,14 @@ int main(void)
 				writestring("Main: got odd input\r\n", USART5);
 				break;
 			}
+
+			if (read_trigger_val() == SONAR_TRIGGERED) {
+				espmsg->module_id = 2;
+				espmsg->command = API_CAR_DETECT;
+				espmsg->body.direction = API_DIRECTION_IN;
+				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+				writestring("Main: sent car detect IN\r\n", USART5);
+			}
 #endif
 
 		}

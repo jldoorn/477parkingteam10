@@ -24,6 +24,7 @@ typedef struct {
 } sonar_debouncer_t;
 
 int sonar(void);
+uint8_t read_trigger_val();
 
 
 #endif /* INC_SONAR_H_ */

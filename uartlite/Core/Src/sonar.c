@@ -23,7 +23,7 @@ void us_disable(void) {
 void sonar_init() {
 	int i;
 	for (i = 0; i < SONAR_DEBOUNCE_WIDTH; i++) {
-		debounce_state[i] = UINT16_MAX;
+		debounce_state.buffer[i] = UINT16_MAX;
 	}
 	debounce_state.buffer_idx = 0;
 	debounce_state.triggered=0;
