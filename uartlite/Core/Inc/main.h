@@ -58,6 +58,8 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 #define ESP_STA
+#define SWITCH_DIR_OUT 0
+#define SWITCH_DIR_IN 1
 
 /* USER CODE END EC */
 

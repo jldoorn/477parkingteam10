@@ -124,6 +124,13 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+
+  uint8_t station_id;
+  uint8_t direction_switch_pos;
+
+  	 direction_switch_pos = LL_GPIO_IsInputPinSet(STA_DIR_GPIO_Port, STA_DIR_Pin) ? SWITCH_DIR_IN : SWITCH_DIR_OUT;
+  	 station_id = ((LL_GPIO_ReadInputPort(STA_ID_0_GPIO_Port) & (STA_ID_0_Pin | STA_ID_1_Pin | STA_ID_2_Pin)) >> 4) + 2;
+  	 int str_length = 0;
 	LL_USART_EnableIT_RXNE(USART5);
 	LL_USART_EnableIT_RXNE(USART7);
 	LL_TIM_EnableIT_UPDATE(TIM2);
@@ -133,7 +140,6 @@ int main(void)
 	esp_handle.fifo = &usart7_rx_fifo;
 	esp_handle.usartx = USART7;
 	message_t *espmsg = get_message();
-	int str_length = 0;
 	char charbuff[1024] = { 0 };
 	writestring("Starting keypad test\r\n", USART5);
 	keypad();
@@ -157,7 +163,6 @@ int main(void)
   spi_display2("Distance: ");
   writestring("Bootup start!!\r\n", USART5);
 	esp_setup_join("myap", "12345678", &esp_handle);
-	char tmp;
 	writestring("Connect success!!\r\n", USART5);
 	esp_init_udp_station("192.168.0.1", 8080, &esp_handle);
 	espmsg->module_id = 2;
@@ -224,7 +229,7 @@ int main(void)
 
 			switch (charbuff[0]) {
 			case 'P':
-				espmsg->module_id = 2;
+				espmsg->module_id = station_id;
 				espmsg->command = API_PING;
 				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 				writestring("Main: sent ping\r\n", USART5);
@@ -233,7 +238,7 @@ int main(void)
 							writestring("Send success!!\r\n", USART5);
 				break;
 			case 'M':
-				espmsg->module_id = 2;
+				espmsg->module_id = station_id;
 				espmsg->command = API_DISTANCE_SEND;
 				espmsg->body.distance = sonar();
 				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
@@ -248,9 +253,9 @@ int main(void)
 			}
 
 			if (read_trigger_val() == SONAR_TRIGGERED) {
-				espmsg->module_id = 2;
+				espmsg->module_id = station_id;
 				espmsg->command = API_CAR_DETECT;
-				espmsg->body.direction = API_DIRECTION_IN;
+				espmsg->body.direction = direction_switch_pos == SWITCH_DIR_IN ? API_DIRECTION_IN : API_DIRECTION_OUT;
 				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 				writestring("Main: sent car detect IN\r\n", USART5);
 			}
