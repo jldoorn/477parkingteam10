@@ -57,6 +57,9 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define ESP_STA
+#define SWITCH_DIR_OUT 0
+#define SWITCH_DIR_IN 1
 
 /* USER CODE END EC */
 
@@ -93,6 +96,14 @@ void Error_Handler(void);
 #define PROX_TRIG_GPIO_Port GPIOA
 #define PROX_MEAS_Pin LL_GPIO_PIN_11
 #define PROX_MEAS_GPIO_Port GPIOA
+#define STA_ID_0_Pin LL_GPIO_PIN_4
+#define STA_ID_0_GPIO_Port GPIOB
+#define STA_ID_1_Pin LL_GPIO_PIN_5
+#define STA_ID_1_GPIO_Port GPIOB
+#define STA_ID_2_Pin LL_GPIO_PIN_6
+#define STA_ID_2_GPIO_Port GPIOB
+#define STA_DIR_Pin LL_GPIO_PIN_7
+#define STA_DIR_GPIO_Port GPIOB
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  4 bits for subpriority */
