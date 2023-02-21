@@ -10,6 +10,7 @@
 #include "spidisp.h"
 #include "string.h"
 #include "stdio.h"
+#include "7segment.h"
 
 
 void keypad(){
@@ -83,37 +84,36 @@ void keypad(){
 		else if (key == '*'){
 			count++;
 		}
-		spi_display2(disp);						// Display # of Parking Spaces
+
+		//displayCount_oled(disp);
+		displayCount_7segment(disp);
 	}
 
 	// Process User Input
 	sscanf(disp, "%d", &ips);					// Convert Array of chars to an int for the initial count of spots
 	sscanf(disp, "%d", &sti);					// Convert Array of chars to an int for the running count of spots
+
 	spi_display1("                    ");		// Clear top line of OLED
-	spi_display1("# of Open Spots");			// Display current count of spots
+	spi_display2("                    ");		// Clear top line of OLED
+	//spi_display1("# of Open Spots");			// Display current count of spots
 
 	// Add functionality to add and decrement count number for testing purposes
 	for(;;){
 		key = get_keypress();
 		if (key == 'A'){
-			if(sti < ips){
-				sti++;
-				sprintf(disp, "%d", sti);
-				spi_display2(disp);
-			}
-			else{
-				spi_display1("                    ");
-				spi_display1("Error");
-				spi_display2("                    ");
-				spi_display2("Exceeded Limit");
-				break;
-			}
+			sti++;
+			sprintf(disp, "%d", sti);			//Convert back to string
+
+			//displayCount_oled(disp);
+			displayCount_7segment(disp);
 		}
 		else if(key == 'B'){
 			if(sti > 0){
 				sti--;
 				sprintf(disp, "%d", sti);
-				spi_display2(disp);
+
+				//displayCount_oled(disp);
+				displayCount_7segment(disp);
 			}
 			else{
 				spi_display1("                    ");
@@ -124,5 +124,14 @@ void keypad(){
 			}
 		}
 	}
+}
+void displayCount_oled(char disp[3]){
+	spi_display2(disp);
+}
 
+void displayCount_7segment(char disp[3]){
+	// Display # of Parking Spaces on 7 segment
+	// *Not tested* builds but gives a warning that might need debugging
+	msg[0] |= font[disp[0]];
+	msg[1] |= font[disp[1]];
 }

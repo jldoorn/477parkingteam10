@@ -32,6 +32,7 @@
 #include "spidisp.h"
 #include "keypadtimer.h"
 #include "keypad.h"
+#include "7segment.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
