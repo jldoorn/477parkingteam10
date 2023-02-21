@@ -85,8 +85,8 @@ void keypad(){
 			count++;
 		}
 
-		//displayCount_oled(disp);
-		displayCount_7segment(disp);
+		//displayCount_oled(disp);				// Uncomment to use oled
+		displayCount_7segment(disp);			// Comment to use oled
 	}
 
 	// Process User Input
@@ -94,8 +94,8 @@ void keypad(){
 	sscanf(disp, "%d", &sti);					// Convert Array of chars to an int for the running count of spots
 
 	spi_display1("                    ");		// Clear top line of OLED
-	spi_display2("                    ");		// Clear top line of OLED
-	//spi_display1("# of Open Spots");			// Display current count of spots
+	spi_display2("                    ");		// Clear top line of OLED -> Comment to use oled
+	//spi_display1("# of Open Spots");			// Display current count of spots -> Uncomment to use oled
 
 	// Add functionality to add and decrement count number for testing purposes
 	for(;;){
@@ -104,16 +104,16 @@ void keypad(){
 			sti++;
 			sprintf(disp, "%d", sti);			//Convert back to string
 
-			//displayCount_oled(disp);
-			displayCount_7segment(disp);
+			//displayCount_oled(disp);			// Uncomment to use oled
+			displayCount_7segment(disp);		// Comment to use oled
 		}
 		else if(key == 'B'){
 			if(sti > 0){
 				sti--;
 				sprintf(disp, "%d", sti);
 
-				//displayCount_oled(disp);
-				displayCount_7segment(disp);
+				//displayCount_oled(disp);		// Uncomment to use oled
+				displayCount_7segment(disp);	// Comment to use oled
 			}
 			else{
 				spi_display1("                    ");
