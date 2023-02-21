@@ -13,88 +13,86 @@
 
 
 void keypad(){
-	int count = 0;
-	int sti = 0;
-	int ips = 0;
-	LL_TIM_EnableCounter(TIM6);
-	spi_init_oled();
-	spi_display1("Enter # of Spots");
-	char key;
-	char* temp;
-	char disp[3] = "";
-	while(count < 2) {
-		key = get_keypress();
-		if(count < 2){
-			if (key == '0'){
-				//spi_display2("0");
-				temp = "0";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '1'){
-				//spi_display2("1");
-				temp = "1";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '2'){
-				//spi_display2("2");
-				temp = "2";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '3'){
-				//spi_display2("3");
-				temp = "3";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '4'){
-				//spi_display2("4");
-				temp = "4";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '5'){
-				//spi_display2("5");
-				temp = "5";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '6'){
-				//spi_display2("6");
-				temp = "6";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '7'){
-				//spi_display2("7");
-				temp = "7";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '8'){
-				//spi_display2("8");
-				temp = "8";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '9'){
-				//spi_display2("9");
-				temp = "9";
-				strncat(disp, temp, 1);
-				count++;
-			}
-			else if (key == '*'){
-				count++;
-			}
-			spi_display2(disp);
+
+	// Declare/Initialize Variables
+	int count = 0;								// Variable to keep the input to 2 digits
+	int sti = 0;								// Variable that holds the current number of spots
+	int ips = 0;								// Variable that holds the initial number of spots
+	char key;									// Variable where key presses are stored initially
+	char* temp;									// Variable where the key being pressed is temporarily stored
+	char disp[3] = "";							// Variable to hold the initial parking spot count before converted to integer
+
+	// Set Up Environment
+	LL_TIM_EnableCounter(TIM6);					// Initialize timer 6 counter
+	spi_init_oled();							// Initialize OLED
+	spi_display1("Enter # of Spots");			// Prompt User Input
+
+	// Gather Total # of Parking Spaces Before Anyone is Parked (going to rewrite as switch statement if I have time)
+	while(count < 2) {							// Ensure only 2 digits are entered
+		key = get_keypress();					// Get Key Press
+		if (key == '0'){
+			temp = "0";
+			strncat(disp, temp, 1);				// Concatenate temp to array of chars
+			count++;
 		}
+		else if (key == '1'){
+			temp = "1";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '2'){
+			temp = "2";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '3'){
+			temp = "3";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '4'){
+			temp = "4";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '5'){
+			temp = "5";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '6'){
+			temp = "6";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '7'){
+			temp = "7";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '8'){
+			temp = "8";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '9'){
+			temp = "9";
+			strncat(disp, temp, 1);
+			count++;
+		}
+		else if (key == '*'){
+			count++;
+		}
+		spi_display2(disp);						// Display # of Parking Spaces
 	}
-	sscanf(disp, "%d", &ips);
-	sscanf(disp, "%d", &sti);
-	spi_display1("                    ");
-	spi_display1("# of Open Spots");
+
+	// Process User Input
+	sscanf(disp, "%d", &ips);					// Convert Array of chars to an int for the initial count of spots
+	sscanf(disp, "%d", &sti);					// Convert Array of chars to an int for the running count of spots
+	spi_display1("                    ");		// Clear top line of OLED
+	spi_display1("# of Open Spots");			// Display current count of spots
+
+	// Add functionality to add and decrement count number for testing purposes
 	for(;;){
 		key = get_keypress();
 		if (key == 'A'){
