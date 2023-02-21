@@ -54,8 +54,47 @@ contact course staff.
 		<div id="content">
             <h2>Progress Report for Heath Aaron Lovell</h2>
             
-            <h4>Week 4:</h4>
-            <b>Date:</b> 2/1/2023<br>
+            <h4>Week 6:</h4>
+            <b>Date:</b> 2/17/2023<br>
+            <b>Total hours: 10</b> <br>
+            <b>Description of project design efforts:</b><br>
+            <ul style = "padding-left:20px">
+                &emsp;&emsp;This week, most of my time was focused on finalizing the PCB schematic design for the car detector module. Shown below in Figure 5.1 is
+                the current design of the CDM PCB. Starting in the top left and moving counter clockwise, I have designed the programming header, reset switch, 
+                debugging/switch LEDs, external oscillator clock, capacitors for power, 10 total debug pins with a header, user input switches for the ID of the CDM, 
+                the level shifting chip, HC-SR04 wiring, WiFi module wiring, and the micro-USB power wiring. I chose to use 4 total debugging LEDs that will match
+                with the user input switches in our final implementation, but are also usable through pins PB0-PB3 to use when testing to ensure that our code is 
+                working. During final implementation, they will function as a viewable way for the user to tell what they have set the ID to. I also decided to go 
+                with 8 various debugging pins, as well as dedicated UART Rx and Tx pins. I currently have the Ultrasonic sensor only connected to the level shifter
+                chip we are planning to use, but I will need to add the custom circuit we created for the 5V > 3.3V and 3.3V > 5V shifting as well, since we may use 
+                that for one of our design bonus goals. I am planning to start the PCB footprint design next week.
+                <center><img src = "Team/progress/img/aaron/week6/cdm_pcb.jpg" width=600></img></center>
+                <center><b>Figure 5.1: Car detector module PCB</b> </center>
+                <br>
+                &emsp;&emsp;Along with finishing the PCB schematic design, I also tested the large 7-segment display we had to finalize what resistor values we would 
+                need for the current limiting resistors, as well as to ensure that the 7-segment functioned as we thought. First, shown in Figure 5.2, I soldered wires 
+                to each of the soldering points on the 7-segment to test it. Next, I used 100 ohm resistors to make sure that it lit up and everything worked, which is
+                shown in Figure 5.3. Finally, I created the table shown in Figure 5.4 by testing different resistances (100, 30, 15 ohm) to find the total output current, 
+                and get it close to what was recommended on the data sheet (160 mA total / 20 mA per segment). From the testing, I decided to use 15 ohm resistors because
+                when using them, the total current draw was 112 mA, which is not exactly 160 mA, but still allows for a brighter display than the other options I tested. 
+                In Figure 5.5, you can see the three different brightnesses based on what resistance value was used, with them being 15 ohm, 30 ohm, and 100 ohm from top
+                to bottom.
+                <center><img src = "Team/progress/img/aaron/week6/7seg_soldering.jpg" width=600></img></center>
+                <center><b>Figure 5.2: 7-segment wires soldered</b> </center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week6/7seg_lit_up.jpg" width=600></img></center>
+                <center><b>Figure 5.3: 7-segment lit up</b> </center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week6/7seg_current.jpg" width=600></img></center>
+                <center><b>Figure 5.4: 7-segment total current draw</b> </center>
+                <br>
+                <center><img src = "Team/progress/img/aaron/week6/7seg_diff_resistors.jpg" width=600></img></center>
+                <center><b>Figure 5.5: 7-segment differing brightnesses</b> </center>
+                <br>
+            </ul>
+
+            <h4>Week 5:</h4>
+            <b>Date:</b> 2/10/2023<br>
             <b>Total hours: 13</b> <br>
             <b>Description of project design efforts:</b><br>
             <ul style = "padding-left:20px">

@@ -52,6 +52,70 @@ contact course staff.
 		-->
 		<div id="content">
             <h2>Progress Report for Fred Kepler</h2>
+			<h4>Week 6:</h4>
+            <b>Date:</b> -02/17/2023-<br>
+            <b>Total hours:</b> -9- <br>
+            <b>Description of project design efforts:</b><br>
+			This week, I thought it would be a good idea to plan ahead for week 8. Since week 8 is a big week that includes midterm design reviews, I thought it would be a good thing to start early on the process of preparing. 
+			This is to prevent procrastinating on project work and having to cram it in last minute. This will hopefully make sure that our work is quality. The first step in this process includes reading all of the requirements needed for our presentation.
+			After doing this, I got started on creating our powerpoint.
+			<br> <img src="Team/progress/img/Fred/ppt1.png"></img>
+			<br> Figure 30: Presentation: Title Slide <br>
+			I first recovered the picture that we took during our first lab. I inserted it into the title page of our powerpoint. Next, I put all of our names next to each person. After that, I completed the project overview slide. This 
+			was done utilizing our already existing project description on our website. However, I had to trunkate and mutate alot of the paragraph to format a powerpoint slide without looking too verbose.
+			<br> <img src="Team/progress/img/Fred/ppt2.png"></img>
+			<br> Figure 31: Presentation: Project Overview <br>
+			An example of the first draft of our project overview slide is shown above in figure 31. After I finished up this slide, I moved on to the next slide. The next slide is the PSSCs slide. I once again pulled this information from our website and mutated it to fit the presentation format of a powerpoint.
+			<br> <img src="Team/progress/img/Fred/ppt3.png"></img>
+			<br> Figure 32: Presentation: PSSCs <br>
+			Shown above in figure 32 is once again a first draft of the PSSC slide that will be used in our design review presentation. After completing the first draft of these couple of slides, I moved on to the Packaging Design slides. 
+			This was done because I most recently worked on this task for the Mechanical Overview document. The first slide I created for this topic was a brief overview of the packaging for each component in our Parking Tracking System, the CDM and the AM. 
+			<br> <img src="Team/progress/img/Fred/ppt4.png"></img>
+			<br> Figure 33: Presentation: Packaging Design 1 <br>
+			The first draft of this slide is shown above in figure 33. After that I made another slide underneath the same category for the CDM. This slide showcased a CAD model for the packaging of the CDM and also added the dimensions of the design.
+			<br> <img src="Team/progress/img/Fred/ppt5.png"></img>
+			<br> Figure 34: Presentation: Packaging Design 2 <br>
+			The first draft of this slide is shown above in figure 34. Next, I replicated this slide for the AM.
+			<br> <img src="Team/progress/img/Fred/ppt6.png"></img>
+			<br> Figure 35: Presentation: Packaging Design 3 <br>
+			The first draft of this slide is shown above in figure 35. At this point I realized that it would be a good point to check with my team members on what they were working on, and asking for any feedback on the slides that I made the first drafts of.
+			<br>
+			The next thing that I did this week was in preparation of our hardware demo as a prrof of concept towards our pcb design. The idea behind this demo was to ensure that all of the hardware devides worked together how they should.
+			This would proove that we were ready to finalize the pcb desing. Since we wanted the demo to be done by the end of week 7, this week was a good time to start on that. The first step in this process was to decide which 
+			development boards were going to be used for the CDM and AM. We decided that we would use Aarons board for the CDM because it already had the sonar sensing capabilities. We chose my board for the AM because it alread had
+			the prototped keyboard and oled capabilities. If you remember how mess my development board was all the way back in figure 3 and the couple after, you know how messy it was. 
+			<br>
+			That brings me to my next step in the progress for this week. I cleaned up my board as best as I could by switching every wire out for a shorter, better fitting one. This made my board look a lot cleaner, and ready to prototype the AM on.
+			<br> <img src="Team/progress/img/Fred/newDevboard.jpg"></img>
+			<br> Figure 36: Cleaned Up Development Board <br>
+			A picture of the much cleaner board is shown above in figure 36.
+			<br>
+			The next step in my progress toawards creating this demo was to download the software we were going to run our systems code on. Throughout this semester, I had been working with the System Workbench program. However Jon had been working with the cubeIDE.
+			We decided that this demo would best be run using the cubeIDE. Therefore, I had to download the software. 
+			<br> <img src="Team/progress/img/Fred/cube.png"></img>
+			<br> Figure 37: CubeIDE <br>
+			A snippet of the downloaded software is shown above. Another thing that I did to prepare for this demo was look into a distance debouncer. WHile researching a couple ideas, I came across two main implementations.
+			The first was to implment a low pass filter. We did not want to add any more hardware so we decided to take the software approach. This included storing an array of values measured, and making sure all values were above a certain threshold to trigger.
+			We figured this would work best for our design, because we didnt want to add any more components to the pcb.
+			<br>
+			After downloading the CubeIDE, I had to clone our groups repository. After I cloned the repository, I had to integrate the code I developed into our repository. This started by modulating my 1 file into 4 different files.
+			These files include a source and header file for the keypad, and a source and header file for the timer. I enabled the timer in main, shown below in the first line of figure 38.
+			<br> <img src="Team/progress/img/Fred/tim6en.png"></img>
+			<br> Figure 38: Enable Timer 6 <br>
+			Also shown above in the last line of figure 38, I had to enable the interrupts for the timer. The next step in this process was to add all of the helper functions to the file called keypadtimer.
+			<br> <img src="Team/progress/img/Fred/keypadtimerh.png"></img>
+			<br> Figure 39: keypadtimer.h <br>
+			<br> <img src="Team/progress/img/Fred/keypadtimerc.png"></img>
+			<br> Figure 40: keypadtimer.c <br>
+			These helper functions are shown above in figures 39 and 40. Once these two files were developed, debugged, and tested, I moved on to the keypads functionality. This was done in the keypad files.
+			<br> <img src="Team/progress/img/Fred/keypadh.png"></img>
+			<br> Figure 41: keypad.h <br>
+			<br> <img src="Team/progress/img/Fred/keypadc.png"></img>
+			<br> Figure 42: keypad.c <br>
+			These files are shown above in figures 41 and 42. Once these two files were developed, debugged, and tested, I pushed my code to the github repository. This code is just testing code. Jon helped me throughout the development process. 
+			My plans over the weekend and early next week is to furthur my code to implement actual functionality for the demo.
+			<br>
+
 			<h4>Week 5:</h4>
             <b>Date:</b> -02/10/2023-<br>
             <b>Total hours:</b> -12- <br>
