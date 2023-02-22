@@ -85,6 +85,7 @@ int __io_putchar(int c) {
 	return c;
 }
 
+
 /* USER CODE END 0 */
 
 /**
@@ -132,7 +133,8 @@ int main(void)
   uint8_t direction_switch_pos;
 
   	 direction_switch_pos = LL_GPIO_IsInputPinSet(STA_DIR_GPIO_Port, STA_DIR_Pin) ? SWITCH_DIR_IN : SWITCH_DIR_OUT;
-  	 station_id = ((LL_GPIO_ReadInputPort(STA_ID_0_GPIO_Port) & (STA_ID_0_Pin | STA_ID_1_Pin | STA_ID_2_Pin)) >> 4) + 2;
+//  	 station_id = ((LL_GPIO_ReadInputPort(STA_ID_0_GPIO_Port) & (STA_ID_0_Pin | STA_ID_1_Pin | STA_ID_2_Pin)) >> 4) + 2;
+  	 station_id = 2;
   	 int str_length = 0;
 	LL_USART_EnableIT_RXNE(USART5);
 	LL_USART_EnableIT_RXNE(USART7);
@@ -142,12 +144,14 @@ int main(void)
 	esp_handle.debug = USART5;
 	esp_handle.fifo = &usart7_rx_fifo;
 	esp_handle.usartx = USART7;
-	message_t *espmsg = get_message();
+	message_t *espmsg;
 	char charbuff[1024] = { 0 };
-	writestring("Starting keypad test\r\n", USART5);
-	keypad();
+	int num_spots;
+
 
 #ifdef ESP_AP
+	writestring("Initializing Number of Spots\r\n", USART5);
+	num_spots = get_num_spots();
   	writestring("Startinig init routine\r\n", USART5);
   setup_esp(&esp_handle, "myap", "12345678", "192.168.0.1");
   writestring("Pick P for ping, A for ack, followed by <CR><LF>\r\n", USART5);
@@ -163,16 +167,20 @@ int main(void)
 //  	}
   spi_init_oled();
   spi_display1("Hello world");
-  spi_display2("Distance: ");
+//  spi_display2("Distance: ");
   writestring("Bootup start!!\r\n", USART5);
 	esp_setup_join("myap", "12345678", &esp_handle);
 	writestring("Connect success!!\r\n", USART5);
+
 	esp_init_udp_station("192.168.0.1", 8080, &esp_handle);
+	spi_display1("                    ");
+	spi_display1("Wifi Connected");
+	espmsg = get_message();
 	espmsg->module_id = 2;
 	espmsg->command = API_PING;
 	esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 	writestring("Main: sent ping\r\n", USART5);
-	writestring("Pick P for ping, M for measurement, followed by <CR><LF>\r\n",
+	writestring("Pick P for ping, I for inflow, O for outflow, followed by <CR><LF>\r\n",
 			USART5);
 //    esp_send_data("Hello World\r\n", strlen("Hello World\r\n"),  &esp_handle, 0);
 //    while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
@@ -189,9 +197,27 @@ int main(void)
 
 		if ((!fifo_empty(esp_handle.fifo))
 				&& (esp_debug_response(&esp_handle) == ESP_DATA)) {
+			espmsg = (message_t*) esp_incoming.buffer;
 			writestring("Main: Got ESP Data\r\n", USART5);
-			debug_message((message_t*) esp_incoming.buffer, charbuff);
+			debug_message(espmsg, charbuff);
 			writestring(charbuff, USART5);
+
+			if (espmsg->command == API_CAR_DETECT) {
+				switch (espmsg->body.direction) {
+					case API_DIRECTION_IN:
+						num_spots--;
+						num_spots = num_spots < 0 ? 0 : num_spots;
+						break;
+					case API_DIRECTION_OUT:
+						num_spots++;
+						break;
+					default:
+						break;
+				}
+				sprintf(charbuff, "%d", num_spots);
+				spi_display2("                    ");
+				spi_display2(charbuff);
+			}
 //		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
 //		  esp_send_data(esp_incoming.buffer, esp_incoming.count, USART7, &usart7_rx_fifo, USART5);
 //		  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
@@ -199,8 +225,37 @@ int main(void)
 
 #ifdef ESP_STA
 
-		sprintf(charbuff, "Distance: %d", sonar());
-		spi_display2(charbuff);
+//		sprintf(charbuff, "Distance: %d", sonar());
+//		spi_display2(charbuff);
+
+		if (!LL_GPIO_IsInputPinSet(INFLOW_BTN_GPIO_Port, INFLOW_BTN_Pin)) {
+
+			// inflow
+			espmsg->module_id = station_id;
+							espmsg->command = API_CAR_DETECT;
+							espmsg->body.direction = API_DIRECTION_IN;
+							esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+							writestring("Main: sent inflow\r\n", USART5);
+							while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+											;
+										writestring("Send success!!\r\n", USART5);
+										spi_display1("                    ");
+											spi_display1("Sent Inflow");
+		}
+		if (!LL_GPIO_IsInputPinSet(OUTFLOW_BTN_GPIO_Port, OUTFLOW_BTN_Pin)) {
+
+					// outflow
+			espmsg->module_id = station_id;
+							espmsg->command = API_CAR_DETECT;
+							espmsg->body.direction = API_DIRECTION_OUT;
+							esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+							writestring("Main: sent outflow\r\n", USART5);
+							while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+											;
+										writestring("Send success!!\r\n", USART5);
+										spi_display1("                    ");
+											spi_display1("Sent Outflow");
+		}
 
 #endif
 
@@ -229,7 +284,7 @@ int main(void)
 
 #endif
 #ifdef ESP_STA
-
+		  	  espmsg = get_message();
 			switch (charbuff[0]) {
 			case 'P':
 				espmsg->module_id = station_id;
@@ -240,28 +295,42 @@ int main(void)
 								;
 							writestring("Send success!!\r\n", USART5);
 				break;
-			case 'M':
+			case 'I':
 				espmsg->module_id = station_id;
-				espmsg->command = API_DISTANCE_SEND;
-				espmsg->body.distance = sonar();
+				espmsg->command = API_CAR_DETECT;
+				espmsg->body.direction = API_DIRECTION_IN;
 				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-				writestring("Main: sent distance\r\n", USART5);
+				writestring("Main: sent inflow\r\n", USART5);
 				while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
 								;
 							writestring("Send success!!\r\n", USART5);
+							spi_display1("                    ");
+								spi_display1("Sent Inflow");
+				break;
+			case 'O':
+				espmsg->module_id = station_id;
+				espmsg->command = API_CAR_DETECT;
+				espmsg->body.direction = API_DIRECTION_OUT;
+				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+				writestring("Main: sent outflow\r\n", USART5);
+				while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+								;
+							writestring("Send success!!\r\n", USART5);
+							spi_display1("                    ");
+															spi_display1("Sent Outflow");
 				break;
 			default:
 				writestring("Main: got odd input\r\n", USART5);
 				break;
 			}
 
-			if (read_trigger_val() == SONAR_TRIGGERED) {
-				espmsg->module_id = station_id;
-				espmsg->command = API_CAR_DETECT;
-				espmsg->body.direction = direction_switch_pos == SWITCH_DIR_IN ? API_DIRECTION_IN : API_DIRECTION_OUT;
-				esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-				writestring("Main: sent car detect IN\r\n", USART5);
-			}
+//		if (read_trigger_val() == SONAR_TRIGGERED) {
+//			espmsg->module_id = station_id;
+//			espmsg->command = API_CAR_DETECT;
+//			espmsg->body.direction = direction_switch_pos == SWITCH_DIR_IN ? API_DIRECTION_IN : API_DIRECTION_OUT;
+//			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+//			writestring("Main: sent car detect IN\r\n", USART5);
+//		}
 #endif
 
 		}
@@ -737,8 +806,8 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
 
   /**/
   LL_GPIO_ResetOutputPin(KEYPADO0_GPIO_Port, KEYPADO0_Pin);
@@ -778,6 +847,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
   LL_GPIO_Init(KEYPADI3_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = INFLOW_BTN_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(INFLOW_BTN_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = OUTFLOW_BTN_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(OUTFLOW_BTN_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = KEYPADO0_Pin;

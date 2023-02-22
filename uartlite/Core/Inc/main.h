@@ -84,6 +84,10 @@ void Error_Handler(void);
 #define KEYPADI2_GPIO_Port GPIOC
 #define KEYPADI3_Pin LL_GPIO_PIN_5
 #define KEYPADI3_GPIO_Port GPIOC
+#define INFLOW_BTN_Pin LL_GPIO_PIN_1
+#define INFLOW_BTN_GPIO_Port GPIOB
+#define OUTFLOW_BTN_Pin LL_GPIO_PIN_2
+#define OUTFLOW_BTN_GPIO_Port GPIOB
 #define KEYPADO0_Pin LL_GPIO_PIN_6
 #define KEYPADO0_GPIO_Port GPIOC
 #define KEYPADO1_Pin LL_GPIO_PIN_7
