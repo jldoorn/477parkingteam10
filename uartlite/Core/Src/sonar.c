@@ -75,13 +75,11 @@ int sonar(void) {
 	nano_wait(10000);
 	us_disable();
 
-	nano_wait(10000);
-	us_enable();
-
-
-	while( !(LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
+//	nano_wait(10000);
+//	us_enable();
 
 	uscounter_clear();
+	while( !(LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
 	uscounter_start();
 	while( (LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
 	uscounter_stop();
