@@ -50,6 +50,15 @@ h4 {
 	letter-spacing: -1px;
 	text-transform: uppercase;
 }
+h5 {
+	color: #3a3a3a;
+	font: 30px/30px 'Ubuntu', Arial, Helvetica, sans-serif;
+	margin: 10px 0px 10px 20px;
+	text-transform: uppercase;
+	letter-spacing: -2px;
+}
+
+
 
 #content ul {
 	/*list-style: none;*/

@@ -273,10 +273,10 @@ div .img-caption h4 {
 }
 
 #document h2 {
-	padding: 8px 0px 8px 40px;
+	padding: 8px 0px 8px 60px;
 	color: #000000;
 	text-transform: none;
-	background: url(../img/assignment.png) no-repeat left 5px;
+	background: url(../img/assignment.png) no-repeat 20px 5px;
 }
 
 #document ul{
