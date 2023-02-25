@@ -53,6 +53,71 @@ contact course staff.
 		<div id="content">
             <h2>Progress Report for Jonthan Doorn</h2>
 
+			<h4>Week 7:</h4>
+            <b>Date:</b> Friday, February 24, 2023<br>
+            <b>Total hours:</b> 9<br>
+            <b>Description of project design efforts:</b><br>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Implemented proximity debouncer for CDM</li>
+				<li>Researched gated timers for better proximity precision</li>
+				<li>Integrated Fred's keypad and LCD code from a capacity demo into the main codebase</li>
+				<li>Prepared flow demo with CDM to AM communication</li>
+			</ul>
+			The first task for this week's design efforts was architecting a debouncer
+			to handle proximity sensor measurements that the team is able to acquire. 
+			The concept to trigger a flow event for our parking system is to collect 
+			proximity measurements periodically, and once the distance measured stays under
+			a threshold for a given amount of time, consider it to be a flow event. 
+			A flow event should not be reported more than once for a stream of low distance
+			measurements.
+			<br><br>
+			I implemented this debouncer design by creating a ring buffer where new proximity measurements
+			are stored. Upon storing a new measurement in the buffer, if all buffer elements are under a
+			distance threshold, a trigger flag is set. The trigger flag is reset once the trigger has been read
+			and all the distance measurements in the buffer rise back above the triggering threshold.
+			<br><br>
+			I also spent time researching more resource efficient ways of collecting distance measurements
+			from the proximity sensor. A measurement from the sensor can be obtained by triggering the 
+			sensor for 10us, then measuring the amount of time the sensor's measurement pin stays high. Currently,
+			the triggering is performed by busy waiting in the measurement function, and a microsecond timer
+			is started once the sensor's measurement pin goes high. The timer increments a global variable every
+			interrupt, and once the sensor's measurement pin drops, the timer is stopped and the global microsecond
+			count is read.
+			<br><br>
+			An alternative to this method could be to configure a timer in gated slave mode, where a trigger pin
+			controls the enable state of the timer's counter. Upon triggering the proximity sensor, the gated 
+			timer's counter register could be reset, and an interrupt after the measurement pin goes low could
+			read the gated timer's counter register, and place the distance measurement in the debouncer's ring buffer.
+			<br><br>
+			Finally, I integrated Fred's keypad and display code from a demo he produced for AM initialization into 
+			the main codebase. This step was the last component needed to produce a demo of the entire flow of 
+			parking system operation. I finished off this demo by writing CDM code to send flow events when 
+			buttons were pressed.
+			<br><br>
+			The flow of this demo is as followed, and shown in figures 14 and 15:
+			<ol>
+				<li>Power on AM</li>
+				<li>Enter number of free spaces on AM</li>
+				<li>Power on CDM</li>
+				<li>Wait for CDM to indicate that Wifi has been connected</li>
+				<li>Press CDM button to send an inflow update, observe AM count decreases</li>
+				<li>Press CDM button to send an outflow update, observe AM count increases</li>
+			</ol>
+
+			<h5>Figures</h5> 
+			<div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/am_flow.jpeg"></img><br>
+				<b>Figure 14:</b> AM flow demo setup indicating garage capacity on LCD display
+			</div>
+			<br><br>
+			<div style="margin: auto; text-align: center;">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/cdm_flow.jpeg"></img><br>
+				<b>Figure 15:</b> CDM flow demo setup with button-triggered flow events and debug LCD display
+			</div>
+            <br>
+
+
 			<h4>Week 6:</h4>
             <b>Date:</b> Friday, February 17, 2023<br>
             <b>Total hours:</b> 12<br>
