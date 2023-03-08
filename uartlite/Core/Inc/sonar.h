@@ -9,10 +9,10 @@
 #define INC_SONAR_H_
 #include "main.h"
 
-#define SONAR_DEBOUNCE_WIDTH 5
+#define SONAR_DEBOUNCE_WIDTH 10
 
-#define SONAR_THRESH_TRIG 10
-#define SONAR_THRESH_CLEAR 50
+#define SONAR_THRESH_TRIG 50
+#define SONAR_THRESH_CLEAR 100
 #define SONAR_TRIGGERED 1
 
 typedef struct {
@@ -23,8 +23,11 @@ typedef struct {
 	uint8_t trigger_read;
 } sonar_debouncer_t;
 
+volatile extern uint8_t trigger_measurement_event;
+
 int sonar(void);
 uint8_t read_trigger_val();
+void sonar_init();
 
 
 #endif /* INC_SONAR_H_ */

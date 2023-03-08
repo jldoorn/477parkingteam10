@@ -25,6 +25,10 @@
 #include "fifo.h"
 #include "ustimer.h"
 #include "keypadtimer.h"
+#include "uartstream.h"
+#include "sonar.h"
+#include "string.h"
+#include "spidisp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,7 +48,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+char debugstr[100];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -174,19 +178,6 @@ void DMA1_Ch2_3_DMA2_Ch1_2_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles TIM1 break, update, trigger and commutation interrupts.
-  */
-void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
-{
-  /* USER CODE BEGIN TIM1_BRK_UP_TRG_COM_IRQn 0 */
-
-  /* USER CODE END TIM1_BRK_UP_TRG_COM_IRQn 0 */
-  /* USER CODE BEGIN TIM1_BRK_UP_TRG_COM_IRQn 1 */
-
-  /* USER CODE END TIM1_BRK_UP_TRG_COM_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM2 global interrupt.
   */
 void TIM2_IRQHandler(void)
@@ -218,6 +209,21 @@ void TIM6_DAC_IRQHandler(void)
   /* USER CODE BEGIN TIM6_DAC_IRQn 1 */
 
   /* USER CODE END TIM6_DAC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM7 global interrupt.
+  */
+void TIM7_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM7_IRQn 0 */
+	TIM7->SR &= ~TIM_SR_UIF;
+	trigger_measurement_event = 1;
+
+  /* USER CODE END TIM7_IRQn 0 */
+  /* USER CODE BEGIN TIM7_IRQn 1 */
+
+  /* USER CODE END TIM7_IRQn 1 */
 }
 
 /**

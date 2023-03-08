@@ -40,6 +40,7 @@
 fifo_t usart5_rx_fifo = { 0 };
 fifo_t usart7_rx_fifo = { 0 };
 volatile int uscounter = 0;
+volatile uint8_t trigger_measurement_event = 0;
 volatile int rows = 0;
 volatile uint8_t col = 0;
 /* USER CODE END PTD */
@@ -69,7 +70,7 @@ static void MX_USART7_UART_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM6_Init(void);
-static void MX_TIM1_Init(void);
+static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -83,6 +84,17 @@ int __io_putchar(int c) {
 	USART5->TDR = c;
 
 	return c;
+}
+
+void sonar_demo() {
+	sonar_init();
+	while (1) {
+		if (read_trigger_val() == SONAR_TRIGGERED) {
+			spi_display2("Sonar Trig");
+			nano_wait(500000000);
+			spi_display2("          ");
+		}
+	}
 }
 
 
@@ -126,7 +138,7 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM2_Init();
   MX_TIM6_Init();
-  MX_TIM1_Init();
+  MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
 
   uint8_t station_id;
@@ -136,10 +148,16 @@ int main(void)
 //  	 station_id = ((LL_GPIO_ReadInputPort(STA_ID_0_GPIO_Port) & (STA_ID_0_Pin | STA_ID_1_Pin | STA_ID_2_Pin)) >> 4) + 2;
   	 station_id = 2;
   	 int str_length = 0;
+//  	 NVIC_SetPriority(USART3_8_IRQn, 0);
+//  	 NVIC_SetPriority(TIM7_IRQn, 1);
+
 	LL_USART_EnableIT_RXNE(USART5);
 	LL_USART_EnableIT_RXNE(USART7);
-	LL_TIM_EnableIT_UPDATE(TIM2);
+//	LL_TIM_EnableIT_UPDATE(TIM2);
+	LL_TIM_EnableIT_UPDATE(TIM7);
 	LL_TIM_EnableIT_UPDATE(TIM6);
+
+
 	esp_handle_t esp_handle;
 	esp_handle.debug = USART5;
 	esp_handle.fifo = &usart7_rx_fifo;
@@ -147,6 +165,7 @@ int main(void)
 	message_t *espmsg;
 	char charbuff[1024] = { 0 };
 	int num_spots;
+	int sonar_read;
 
 
 #ifdef ESP_AP
@@ -169,6 +188,10 @@ int main(void)
   spi_display1("Hello world");
 //  spi_display2("Distance: ");
   writestring("Bootup start!!\r\n", USART5);
+
+//  sonar_demo();
+
+
 	esp_setup_join("myap", "12345678", &esp_handle);
 	writestring("Connect success!!\r\n", USART5);
 
@@ -182,6 +205,8 @@ int main(void)
 	writestring("Main: sent ping\r\n", USART5);
 	writestring("Pick P for ping, I for inflow, O for outflow, followed by <CR><LF>\r\n",
 			USART5);
+	sonar_init();
+	spi_display2("not triggered");
 //    esp_send_data("Hello World\r\n", strlen("Hello World\r\n"),  &esp_handle, 0);
 //    while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
 //    writestring("Send success!!\r\n", USART5);
@@ -227,6 +252,14 @@ int main(void)
 
 //		sprintf(charbuff, "Distance: %d", sonar());
 //		spi_display2(charbuff);
+		if (trigger_measurement_event) {
+
+
+			sonar_read = sonar();
+			sprintf(charbuff, "Sonar triggered, dist: %d\r\n", sonar_read);
+			writestring(charbuff, USART5);
+			trigger_measurement_event = 0;
+		}
 
 		if (!LL_GPIO_IsInputPinSet(INFLOW_BTN_GPIO_Port, INFLOW_BTN_Pin)) {
 
@@ -256,6 +289,18 @@ int main(void)
 										spi_display1("                    ");
 											spi_display1("Sent Outflow");
 		}
+		if (read_trigger_val() == SONAR_TRIGGERED) {
+					espmsg->module_id = station_id;
+					espmsg->command = API_CAR_DETECT;
+					espmsg->body.direction = API_DIRECTION_IN;
+					esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+					writestring("Main: sent inflow\r\n", USART5);
+					while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+									;
+								writestring("Send success!!\r\n", USART5);
+								spi_display1("                    ");
+									spi_display1("Sent Inflow");
+				}
 
 #endif
 
@@ -324,13 +369,7 @@ int main(void)
 				break;
 			}
 
-//		if (read_trigger_val() == SONAR_TRIGGERED) {
-//			espmsg->module_id = station_id;
-//			espmsg->command = API_CAR_DETECT;
-//			espmsg->body.direction = direction_switch_pos == SWITCH_DIR_IN ? API_DIRECTION_IN : API_DIRECTION_OUT;
-//			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-//			writestring("Main: sent car detect IN\r\n", USART5);
-//		}
+
 #endif
 
 		}
@@ -474,66 +513,6 @@ static void MX_SPI1_Init(void)
 }
 
 /**
-  * @brief TIM1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM1_Init(void)
-{
-
-  /* USER CODE BEGIN TIM1_Init 0 */
-
-  /* USER CODE END TIM1_Init 0 */
-
-  LL_TIM_InitTypeDef TIM_InitStruct = {0};
-
-  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-  /* Peripheral clock enable */
-  LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_TIM1);
-
-  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
-  /**TIM1 GPIO Configuration
-  PA12   ------> TIM1_ETR
-  */
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /* TIM1 interrupt Init */
-  NVIC_SetPriority(TIM1_BRK_UP_TRG_COM_IRQn, 0);
-  NVIC_EnableIRQ(TIM1_BRK_UP_TRG_COM_IRQn);
-
-  /* USER CODE BEGIN TIM1_Init 1 */
-
-  /* USER CODE END TIM1_Init 1 */
-  TIM_InitStruct.Prescaler = 47;
-  TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 65535;
-  TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
-  TIM_InitStruct.RepetitionCounter = 0;
-  LL_TIM_Init(TIM1, &TIM_InitStruct);
-  LL_TIM_DisableARRPreload(TIM1);
-  LL_TIM_SetClockSource(TIM1, LL_TIM_CLOCKSOURCE_INTERNAL);
-  LL_TIM_SetTriggerInput(TIM1, LL_TIM_TS_ETRF);
-  LL_TIM_SetSlaveMode(TIM1, LL_TIM_SLAVEMODE_GATED);
-  LL_TIM_DisableExternalClock(TIM1);
-  LL_TIM_ConfigETR(TIM1, LL_TIM_ETR_POLARITY_NONINVERTED, LL_TIM_ETR_PRESCALER_DIV1, LL_TIM_ETR_FILTER_FDIV1);
-  LL_TIM_DisableIT_TRIG(TIM1);
-  LL_TIM_DisableDMAReq_TRIG(TIM1);
-  LL_TIM_SetTriggerOutput(TIM1, LL_TIM_TRGO_RESET);
-  LL_TIM_DisableMasterSlaveMode(TIM1);
-  /* USER CODE BEGIN TIM1_Init 2 */
-
-  /* USER CODE END TIM1_Init 2 */
-
-}
-
-/**
   * @brief TIM2 Initialization Function
   * @param None
   * @retval None
@@ -559,7 +538,7 @@ static void MX_TIM2_Init(void)
   /* USER CODE END TIM2_Init 1 */
   TIM_InitStruct.Prescaler = 47;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 9;
+  TIM_InitStruct.Autoreload = 4294;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM2, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM2);
@@ -606,6 +585,43 @@ static void MX_TIM6_Init(void)
   /* USER CODE BEGIN TIM6_Init 2 */
 
   /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  LL_TIM_InitTypeDef TIM_InitStruct = {0};
+
+  /* Peripheral clock enable */
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM7);
+
+  /* TIM7 interrupt Init */
+  NVIC_SetPriority(TIM7_IRQn, 0);
+  NVIC_EnableIRQ(TIM7_IRQn);
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  TIM_InitStruct.Prescaler = 479;
+  TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
+  TIM_InitStruct.Autoreload = 9999;
+  LL_TIM_Init(TIM7, &TIM_InitStruct);
+  LL_TIM_DisableARRPreload(TIM7);
+  LL_TIM_SetTriggerOutput(TIM7, LL_TIM_TRGO_RESET);
+  LL_TIM_DisableMasterSlaveMode(TIM7);
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 
@@ -905,6 +921,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(PROX_MEAS_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
+  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = STA_ID_0_Pin;

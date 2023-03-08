@@ -28,6 +28,7 @@ void sonar_init() {
 	debounce_state.buffer_idx = 0;
 	debounce_state.triggered=0;
 	debounce_state.trigger_read = 0;
+	LL_TIM_EnableCounter(TIM7);
 }
 
 uint8_t read_trigger_val() {
@@ -75,20 +76,21 @@ int sonar(void) {
 	nano_wait(10000);
 	us_disable();
 
-//	nano_wait(10000);
-//	us_enable();
+	nano_wait(10000);
+	us_enable();
 
-	uscounter_clear();
+//	uscounter_clear();
+	LL_TIM_GenerateEvent_UPDATE(TIM2);
 	while( !(LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
-	uscounter_start();
+	LL_TIM_EnableCounter(TIM2);
 	while( (LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
-	uscounter_stop();
+	LL_TIM_DisableCounter(TIM2);
 
-	us_count = uscounter_get_count();
-	debounce_state.buffer[debounce_state.buffer_idx++] = us_count;
+	us_count = LL_TIM_GetCounter(TIM2);
+	debounce_state.buffer[debounce_state.buffer_idx++] = us_count / 14;
 	debounce_state.buffer_idx %= SONAR_DEBOUNCE_WIDTH;
 
 	debounce();
 
-	return us_count;
+	return us_count / 14;
 }
