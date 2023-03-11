@@ -53,6 +53,64 @@ contact course staff.
 		<div id="content">
             <h2>Progress Report for Jonthan Doorn</h2>
 
+			<h4>Weeks 8-9:</h4>
+            <b>Date:</b> Friday, March 10, 2023<br>
+            <b>Total hours:</b> 15<br>
+            <b>Description of project design efforts:</b><br>
+			<h5>Designing efforts</h5>
+			<ul>
+				<li>Integrated proximity debouncer into CDM flow event trigger system</li>
+				<li>Rewrote timer interrupts to reduce critical section time</li>
+			</ul>
+			<h5>Reporting Efforts</h5>
+			<ul>
+				<li>Produced Prototyping, Software, and Project Timeline slides for design review</li>
+				<li>Peer reviewed two design review presentations</li>
+			</ul>
+
+			<h5>Week 8 Contributions</h5>
+Prepared slides for the Design Review presentation. I aggregated diagrams pertaining to our prototypes 
+and software progress to produce visuals used in our design review. I also looked through the 
+syllabus to find important deadlines for the remaining weeks in the semester in order to populate 
+our GANTT chart. In addition to the deadlines, I scoped out milestones for software progress through 
+the end of the project to keep the team on track in development. See the attached figure for our project timeline. 
+<br><br>
+Before our design review, I met with the other team members to run through our presentation and put in finishing touches. 
+Our design review occurred on Thursday afternoon, and then Friday morning I was a peer reviewer for two other teams.
+
+			<h5>Week 9 Contributions</h5>
+			
+			Following the timeline, I implemented the functionality of car detection via proximity sensor measurement
+			 to our prototype. With the modifications, the proximity sensor is integrated with CDM code in triggering 
+			 inflow and outflow measurements. I took extra precautions to debounce the proximity measurements and produce 
+			 one-off triggers such that a single car entry will produce a single modification to overall garage capacity.
+			 <br><br>
+
+			 In implementing this functionality, I created a timer interrupt to go off at a frequency of 100Hz. Originally, 
+			 on interrupt, I directly triggered a proximity measurement and debounce. This by itself was enough to detect car 
+			 trigger state, however once I integrated the rest of the CDM features, namely transmission of trigger events over 
+			 the Wi-Fi connection to the AM, the functionality broke. On transmission of a trigger event, the CDM would freeze. 
+			 On further inspection, the reason for the freeze was due to the timer interrupt occurring too frequently and taking 
+			 too many clock cycles to handle. The timer interrupt would not finish in time for the UART interrupt to buffer incoming data. 
+
+			 <br><br>
+
+			 I overcame this hurdle by moving the work necessitated by the interrupt into the main loop, where the interrupt 
+			 handler sets a flag which is then checked and reset by a routine in main, which can be interrupted when there is 
+			 pending data on the UART RX line. After making this modification, I was able to demonstrate the ability of simulating 
+			 car entry and exit by moving my hand in front of the proximity sensor on the CDM and seeing single updates in capacity
+			  occur on the AM's capacity display. See the attached figure showcasing the setup of this demonstration.
+			  <h5>Figures</h5> 
+			  <div style="margin: auto; text-align: center; ">
+				<img style="width: 50%; border: solid;" src="Team/progress/img/jon/projecttimeline.png"></img><br>
+				<b>Figure 16:</b> Project timeline from design review presentation
+			</div>
+			<br><br>
+			  <div style="margin: auto; text-align: center; ">
+				  <img style="width: 50%; border: solid;" src="Team/progress/img/jon/ProxTriggerDemo.jpeg"></img><br>
+				  <b>Figure 17:</b> CDM to AM flow demo setup where triggers are caused by a stream of close proximity measurements
+			  </div>
+			  <br><br>
 			<h4>Week 7:</h4>
             <b>Date:</b> Friday, February 24, 2023<br>
             <b>Total hours:</b> 9<br>
