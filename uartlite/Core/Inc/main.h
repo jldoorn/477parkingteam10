@@ -76,8 +76,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define KEYPADI0_Pin LL_GPIO_PIN_2
-#define KEYPADI0_GPIO_Port GPIOC
+#define WiFi_EN_Pin LL_GPIO_PIN_2
+#define WiFi_EN_GPIO_Port GPIOC
 #define KEYPADI1_Pin LL_GPIO_PIN_3
 #define KEYPADI1_GPIO_Port GPIOC
 #define KEYPADI2_Pin LL_GPIO_PIN_4
