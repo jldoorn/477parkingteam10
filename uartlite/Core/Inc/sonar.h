@@ -25,7 +25,7 @@ typedef struct {
 
 volatile extern uint8_t trigger_measurement_event;
 
-int sonar(void);
+uint16_t sonar(void);
 uint8_t read_trigger_val();
 void sonar_init();
 

@@ -232,9 +232,9 @@ void TIM7_IRQHandler(void)
 void USART3_8_IRQHandler(void)
 {
   /* USER CODE BEGIN USART3_8_IRQn 0 */
-	if (LL_USART_IsActiveFlag_RXNE(USART5)) {
-		fifo_put(&usart5_rx_fifo, USART5->RDR);
-	}
+//	if (LL_USART_IsActiveFlag_RXNE(USART5)) {
+//		fifo_put(&usart5_rx_fifo, USART5->RDR);
+//	}
   /* USER CODE END USART3_8_IRQn 0 */
 
   /* USER CODE BEGIN USART3_8_IRQn 1 */

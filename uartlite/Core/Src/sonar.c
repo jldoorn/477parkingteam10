@@ -68,9 +68,9 @@ void debounce() {
 	}
 }
 
-int sonar(void) {
+uint16_t sonar(void) {
 
-	int us_count;
+	uint32_t us_count;
 
 	us_enable();
 	nano_wait(10000);
@@ -92,5 +92,5 @@ int sonar(void) {
 
 	debounce();
 
-	return us_count / 14;
+	return us_count / 148;
 }

@@ -208,6 +208,7 @@ esp_response_enum esp_debug_response(esp_handle_t *esp) {
 			writestring("<End of packet data\r\n", esp->debug);
 			return ESP_DATA;
 		} else {
+
 			writestring("ESP Status Update: ", esp->debug);
 			usart_write_n(debug_buffer, buffer_offset, esp->debug);
 			buffer_offset = fifo_read_until(esp->fifo, esp_buffer, '\n', 1024);
@@ -219,8 +220,13 @@ esp_response_enum esp_debug_response(esp_handle_t *esp) {
 		fifo_read_until(esp->fifo, esp_buffer, '\n', 1024); // odd newline
 		break;
 	default:
-		writestring("Got status: ", esp->debug);
 		buffer_offset = fifo_read_until(esp->fifo, esp_buffer, '\n', 1024);
+		if (strnstr(esp_buffer, "WIFI DISCONNECT", buffer_offset)) {
+			return ESP_DISCONNECT;
+		}
+		writestring("Got status: ", esp->debug);
+
+
 		usart_write_n(esp_buffer, buffer_offset, esp->debug);
 		break;
 	}

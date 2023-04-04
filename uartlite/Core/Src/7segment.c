@@ -7,8 +7,32 @@
 
 #include "7segment.h"
 
+#define SEVSEG_NEN_PIN 11
+
 uint16_t msg[8] = { 0x0000,0x0100,0x0200,0x0300,0x0400,0x0500,0x0600,0x0700 };
 
+/*
+ * The 7 segment interface for the two 7 segment digits will work as follows:
+ * 		There is a 16 bit shift register where the most significant 8 bits are
+ * 		the tens place, and the least significant 8 bits are the ones place
+ *
+ * 		The SPI2 interface will write 16 bits to the shift register, MSB first.
+ * 		SSE is active low.
+ */
+
+void print_7segment_number(int count) {
+	uint16_t toWrite = 0;
+	GPIOB->BSRR = 1 << SEVSEG_NEN_PIN;
+	if (count > 100) {
+		count = 99;
+	}
+
+	toWrite |= font[(count / 10) + '0'] << 8;
+	toWrite |= font[(count % 10 ) + '0'];
+
+	SPI2->DR = toWrite;
+	GPIOB->BRR = 1 << SEVSEG_NEN_PIN;
+}
 
 void init_7segment(void){
     setup_7segmentDMA();
@@ -21,7 +45,7 @@ void setup_7segmentDMA(void) {
 
     DMA1_Channel5->CCR &= ~DMA_CCR_EN;          // make sure it is off
 
-    DMA1_Channel5->CPAR = &(SPI2->DR);
+    DMA1_Channel5->CPAR = (uint32_t) &(SPI2->DR);
 
     DMA1_Channel5->CMAR = (uint32_t) msg;
 
@@ -67,6 +91,23 @@ void init_7segmentSPI2(void) {
     SPI2->CR2 |= SPI_CR2_TXDMAEN;
 
     SPI2->CR1 |= SPI_CR1_SPE;
+}
+
+void init_7segmentSPI2_shift(void) {
+	SPI2->CR1 &= ~SPI_CR1_SPE;
+	RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
+
+	GPIOB->MODER &= ~(GPIO_MODER_MODER10 | GPIO_MODER_MODER11 | GPIO_MODER_MODER12 | GPIO_MODER_MODER15);
+	GPIOB->MODER |= GPIO_MODER_MODER10_1 | GPIO_MODER_MODER11_0 | GPIO_MODER_MODER12_1 | GPIO_MODER_MODER15_1;
+
+	GPIOB->BRR |= 1 << 11; // enable the drivers (active low)
+
+	GPIOB->AFR[1] &= ~(GPIO_AFRH_AFSEL10 | GPIO_AFRH_AFSEL12 | GPIO_AFRH_AFSEL15);
+	GPIOB->AFR[1] |= 5 << GPIO_AFRH_AFSEL10_Pos; // alternate function for SPI2 SCK
+
+	SPI2->CR1 |= SPI_CR1_BR | SPI_CR1_MSTR;
+	SPI2->CR2 |= SPI_CR2_SSOE | SPI_CR2_NSSP | SPI_CR2_DS;
+	SPI2->CR1 |= SPI_CR1_SPE;
 }
 
 const char font[] = {
