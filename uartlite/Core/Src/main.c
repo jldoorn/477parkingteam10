@@ -65,13 +65,12 @@ char charbuff[1024] = { 0 };
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_USART5_UART_Init(void);
-static void MX_USART7_UART_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
+static void MX_USART7_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -104,9 +103,9 @@ void sonar_display_distance() {
 	while (1) {
 		if (trigger_measurement_event) {
 			distance = sonar();
-			spi_display1("               ");
-			sprintf(charbuff, "dist: %d", distance);
-			spi_display1(charbuff);
+//			spi_display1("               ");
+			sprintf(charbuff, "dist: %d\r\n", distance);
+			writestring(charbuff, USART5);
 			trigger_measurement_event = 0;
 			nano_wait(200000000);
 		}
@@ -118,6 +117,26 @@ void esp_init_routine(esp_handle_t *esp_handle) {
 		writestring("Connect success!!\r\n", USART5);
 
 		esp_init_udp_station("192.168.0.1", 8080, esp_handle);
+}
+
+void pipe_wifi_to_debug() {
+	char c;
+	LL_GPIO_ResetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+	LL_GPIO_ResetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
+	LL_GPIO_ResetOutputPin(DEBUG_7_GPIO_Port, DEBUG_7_Pin);
+	LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+	LL_GPIO_SetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
+	writestring("Testing 123\r\n", USART7);
+	while(1) {
+		if (USART5->ISR & USART_ISR_RXNE) {
+			c = USART5->RDR;
+			putcharusart(c, USART7);
+//			putcharusart(c, USART5);
+		}
+		if (USART7->ISR & USART_ISR_RXNE) {
+			putcharusart(USART7->RDR, USART5);
+		}
+	}
 }
 
 /* USER CODE END 0 */
@@ -154,16 +173,12 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_USART5_UART_Init();
-  MX_USART7_UART_Init();
   MX_SPI1_Init();
   MX_TIM2_Init();
   MX_TIM6_Init();
   MX_TIM7_Init();
-
-  LL_GPIO_ResetOutputPin(GPIOC, WiFi_EN_Pin);
-  LL_GPIO_SetOutputPin(GPIOC, WiFi_EN_Pin);
+  MX_USART7_UART_Init();
   /* USER CODE BEGIN 2 */
 
 	uint8_t station_id;
@@ -177,12 +192,14 @@ int main(void)
 	int str_length = 0;
 //  	 NVIC_SetPriority(USART3_8_IRQn, 0);
 //  	 NVIC_SetPriority(TIM7_IRQn, 1);
+	LL_GPIO_ResetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+	  LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
 
 //	LL_USART_EnableIT_RXNE(USART5);
 	LL_USART_EnableIT_RXNE(USART7);
-//	LL_TIM_EnableIT_UPDATE(TIM2);
+//	pipe_wifi_to_debug();
 	LL_TIM_EnableIT_UPDATE(TIM7);
-	LL_TIM_EnableIT_UPDATE(TIM6);
+//	LL_TIM_EnableIT_UPDATE(TIM6);
 
 	esp_handle_t esp_handle;
 	esp_handle.debug = USART5;
@@ -221,6 +238,7 @@ int main(void)
 
 //  sonar_demo();
 //  sonar_display_distance();
+
 	esp_init_routine(&esp_handle);
 
 	//spi_display1("                    ");
@@ -301,34 +319,34 @@ int main(void)
 			trigger_measurement_event = 0;
 		}
 
-		if (!LL_GPIO_IsInputPinSet(INFLOW_BTN_GPIO_Port, INFLOW_BTN_Pin)) {
-
-			// inflow
-			espmsg->module_id = station_id;
-			espmsg->command = API_CAR_DETECT;
-			espmsg->body.direction = API_DIRECTION_IN;
-			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-			writestring("Main: sent inflow\r\n", USART5);
-			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
-				;
-			writestring("Send success!!\r\n", USART5);
-			spi_display1("                    ");
-			spi_display1("Sent Inflow");
-		}
-		if (!LL_GPIO_IsInputPinSet(OUTFLOW_BTN_GPIO_Port, OUTFLOW_BTN_Pin)) {
-
-			// outflow
-			espmsg->module_id = station_id;
-			espmsg->command = API_CAR_DETECT;
-			espmsg->body.direction = API_DIRECTION_OUT;
-			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-			writestring("Main: sent outflow\r\n", USART5);
-			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
-				;
-			writestring("Send success!!\r\n", USART5);
-			spi_display1("                    ");
-			spi_display1("Sent Outflow");
-		}
+//		if (!LL_GPIO_IsInputPinSet(INFLOW_BTN_GPIO_Port, INFLOW_BTN_Pin)) {
+//
+//			// inflow
+//			espmsg->module_id = station_id;
+//			espmsg->command = API_CAR_DETECT;
+//			espmsg->body.direction = API_DIRECTION_IN;
+//			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+//			writestring("Main: sent inflow\r\n", USART5);
+//			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+//				;
+//			writestring("Send success!!\r\n", USART5);
+//			spi_display1("                    ");
+//			spi_display1("Sent Inflow");
+//		}
+//		if (!LL_GPIO_IsInputPinSet(OUTFLOW_BTN_GPIO_Port, OUTFLOW_BTN_Pin)) {
+//
+//			// outflow
+//			espmsg->module_id = station_id;
+//			espmsg->command = API_CAR_DETECT;
+//			espmsg->body.direction = API_DIRECTION_OUT;
+//			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+//			writestring("Main: sent outflow\r\n", USART5);
+//			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
+//				;
+//			writestring("Send success!!\r\n", USART5);
+//			spi_display1("                    ");
+//			spi_display1("Sent Outflow");
+//		}
 		if (read_trigger_val() == SONAR_TRIGGERED) {
 			espmsg->module_id = station_id;
 			espmsg->command = API_CAR_DETECT;
@@ -574,7 +592,7 @@ static void MX_TIM2_Init(void)
   /* USER CODE END TIM2_Init 1 */
   TIM_InitStruct.Prescaler = 47;
   TIM_InitStruct.CounterMode = LL_TIM_COUNTERMODE_UP;
-  TIM_InitStruct.Autoreload = 4294;
+  TIM_InitStruct.Autoreload = 4294967294;
   TIM_InitStruct.ClockDivision = LL_TIM_CLOCKDIVISION_DIV1;
   LL_TIM_Init(TIM2, &TIM_InitStruct);
   LL_TIM_DisableARRPreload(TIM2);
@@ -766,42 +784,6 @@ static void MX_USART7_UART_Init(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_1;
   LL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /* USART7 DMA Init */
-
-  /* USART7_RX Init */
-  LL_DMA_SetPeriphRequest(DMA1, LL_DMA_CHANNEL_1, LL_DMA_REQUEST_14);
-
-  LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_1, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
-
-  LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PRIORITY_LOW);
-
-  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MODE_NORMAL);
-
-  LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PERIPH_NOINCREMENT);
-
-  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MEMORY_INCREMENT);
-
-  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_PDATAALIGN_BYTE);
-
-  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_1, LL_DMA_MDATAALIGN_BYTE);
-
-  /* USART7_TX Init */
-  LL_DMA_SetPeriphRequest(DMA1, LL_DMA_CHANNEL_2, LL_DMA_REQUEST_14);
-
-  LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_2, LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
-
-  LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PRIORITY_LOW);
-
-  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MODE_NORMAL);
-
-  LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PERIPH_NOINCREMENT);
-
-  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MEMORY_INCREMENT);
-
-  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PDATAALIGN_BYTE);
-
-  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MDATAALIGN_BYTE);
-
   /* USART7 interrupt Init */
   NVIC_SetPriority(USART3_8_IRQn, 0);
   NVIC_EnableIRQ(USART3_8_IRQn);
@@ -827,26 +809,6 @@ static void MX_USART7_UART_Init(void)
 }
 
 /**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* Init with LL driver */
-  /* DMA controller clock enable */
-  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
-
-  /* DMA interrupt init */
-  /* DMA1_Ch1_IRQn interrupt configuration */
-  NVIC_SetPriority(DMA1_Ch1_IRQn, 0);
-  NVIC_EnableIRQ(DMA1_Ch1_IRQn);
-  /* DMA1_Ch2_3_DMA2_Ch1_2_IRQn interrupt configuration */
-  NVIC_SetPriority(DMA1_Ch2_3_DMA2_Ch1_2_IRQn, 0);
-  NVIC_EnableIRQ(DMA1_Ch2_3_DMA2_Ch1_2_IRQn);
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -862,7 +824,13 @@ static void MX_GPIO_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);
 
   /**/
-  LL_GPIO_ResetOutputPin(WiFi_EN_GPIO_Port, WiFi_EN_Pin);
+  LL_GPIO_ResetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+
+  /**/
+  LL_GPIO_ResetOutputPin(DEBUG_7_GPIO_Port, DEBUG_7_Pin);
+
+  /**/
+  LL_GPIO_ResetOutputPin(DEBUG_8_GPIO_Port, DEBUG_8_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(KEYPADO0_GPIO_Port, KEYPADO0_Pin);
@@ -880,12 +848,15 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(PROX_TRIG_GPIO_Port, PROX_TRIG_Pin);
 
   /**/
-  GPIO_InitStruct.Pin = WiFi_EN_Pin;
+  LL_GPIO_ResetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
+
+  /**/
+  GPIO_InitStruct.Pin = WIFI_EN_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(WiFi_EN_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(WIFI_EN_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = KEYPADI1_Pin;
@@ -906,10 +877,20 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(KEYPADI3_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = INFLOW_BTN_Pin;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pin = DEBUG_7_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(INFLOW_BTN_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(DEBUG_7_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = DEBUG_8_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(DEBUG_8_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = OUTFLOW_BTN_Pin;
@@ -964,13 +945,12 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(PROX_MEAS_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = LL_GPIO_PIN_12;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
+  GPIO_InitStruct.Pin = WIFI_RST_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  GPIO_InitStruct.Alternate = LL_GPIO_AF_2;
-  LL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  LL_GPIO_Init(WIFI_RST_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = STA_ID_0_Pin;

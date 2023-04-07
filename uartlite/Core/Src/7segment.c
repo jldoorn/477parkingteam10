@@ -22,16 +22,21 @@ uint16_t msg[8] = { 0x0000,0x0100,0x0200,0x0300,0x0400,0x0500,0x0600,0x0700 };
 
 void print_7segment_number(int count) {
 	uint16_t toWrite = 0;
-	GPIOB->BSRR = 1 << SEVSEG_NEN_PIN;
+	GPIOB->BRR = 1 << SEVSEG_NEN_PIN;
+	GPIOB->BSRR = 1 << 12 ; // nss high
 	if (count > 100) {
 		count = 99;
 	}
 
 	toWrite |= font[(count / 10) + '0'] << 8;
 	toWrite |= font[(count % 10 ) + '0'];
+//	while ( ~ (SPI2->SR & SPI_SR_BSY));
+	SPI2->DR = ~toWrite;
+	while (SPI2->SR & SPI_SR_BSY);
+	nano_wait(15000);
+	GPIOB->BRR = 1 << 12; // nss low
+	GPIOB->BSRR = 1 << SEVSEG_NEN_PIN;
 
-	SPI2->DR = toWrite;
-	GPIOB->BRR = 1 << SEVSEG_NEN_PIN;
 }
 
 void init_7segment(void){
@@ -98,16 +103,18 @@ void init_7segmentSPI2_shift(void) {
 	RCC->APB1ENR |= RCC_APB1ENR_SPI2EN;
 
 	GPIOB->MODER &= ~(GPIO_MODER_MODER10 | GPIO_MODER_MODER11 | GPIO_MODER_MODER12 | GPIO_MODER_MODER15);
-	GPIOB->MODER |= GPIO_MODER_MODER10_1 | GPIO_MODER_MODER11_0 | GPIO_MODER_MODER12_1 | GPIO_MODER_MODER15_1;
+	GPIOB->MODER |= GPIO_MODER_MODER10_1 | GPIO_MODER_MODER11_0 | GPIO_MODER_MODER12_0 | GPIO_MODER_MODER15_1;
 
 	GPIOB->BRR |= 1 << 11; // enable the drivers (active low)
 
-	GPIOB->AFR[1] &= ~(GPIO_AFRH_AFSEL10 | GPIO_AFRH_AFSEL12 | GPIO_AFRH_AFSEL15);
+	GPIOB->AFR[1] &= ~(GPIO_AFRH_AFSEL10  | GPIO_AFRH_AFSEL15); // | GPIO_AFRH_AFSEL12 // slave select
 	GPIOB->AFR[1] |= 5 << GPIO_AFRH_AFSEL10_Pos; // alternate function for SPI2 SCK
 
 	SPI2->CR1 |= SPI_CR1_BR | SPI_CR1_MSTR;
-	SPI2->CR2 |= SPI_CR2_SSOE | SPI_CR2_NSSP | SPI_CR2_DS;
+	SPI2->CR2 |=  SPI_CR2_DS | SPI_CR2_NSSP | SPI_CR2_SSOE; /*  */ // 16 bit datasize
+	SPI2->CR1 |= SPI_CR1_CPOL ; // | SPI_CR1_SSM; // invert clock polarity and set slave select to be software based
 	SPI2->CR1 |= SPI_CR1_SPE;
+
 }
 
 const char font[] = {

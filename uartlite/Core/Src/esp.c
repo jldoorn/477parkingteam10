@@ -72,6 +72,11 @@ void esp_send_simple_init(int count, USART_TypeDef *usartx) {
 	writestring(esp_buffer, usartx);
 }
 void esp_reset(USART_TypeDef *usartx) {
+	LL_GPIO_ResetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+		LL_GPIO_ResetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
+//		LL_GPIO_ResetOutputPin(DEBUG_7_GPIO_Port, DEBUG_7_Pin);
+		LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+		LL_GPIO_SetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
 	writestring("AT+RST\r\n", usartx);
 }
 

@@ -71,6 +71,7 @@ void debounce() {
 uint16_t sonar(void) {
 
 	uint32_t us_count;
+	LL_TIM_GenerateEvent_UPDATE(TIM2);
 
 	us_enable();
 	nano_wait(10000);
@@ -80,11 +81,13 @@ uint16_t sonar(void) {
 	us_enable();
 
 //	uscounter_clear();
-	LL_TIM_GenerateEvent_UPDATE(TIM2);
-	while( !(LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
-	LL_TIM_EnableCounter(TIM2);
+
 	while( (LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
+	LL_TIM_EnableCounter(TIM2);
+	LL_GPIO_SetOutputPin(DEBUG_8_GPIO_Port, DEBUG_8_Pin);
+	while( (!LL_GPIO_IsInputPinSet(PROX_MEAS_GPIO_Port, PROX_MEAS_Pin)));
 	LL_TIM_DisableCounter(TIM2);
+	LL_GPIO_ResetOutputPin(DEBUG_8_GPIO_Port, DEBUG_8_Pin);
 
 	us_count = LL_TIM_GetCounter(TIM2);
 	debounce_state.buffer[debounce_state.buffer_idx++] = us_count / 14;

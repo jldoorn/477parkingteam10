@@ -27,7 +27,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f0xx_ll_dma.h"
 #include "stm32f0xx_ll_crs.h"
 #include "stm32f0xx_ll_rcc.h"
 #include "stm32f0xx_ll_bus.h"
@@ -36,6 +35,7 @@ extern "C" {
 #include "stm32f0xx_ll_cortex.h"
 #include "stm32f0xx_ll_utils.h"
 #include "stm32f0xx_ll_pwr.h"
+#include "stm32f0xx_ll_dma.h"
 #include "stm32f0xx_ll_spi.h"
 #include "stm32f0xx_ll_tim.h"
 #include "stm32f0xx_ll_usart.h"
@@ -76,16 +76,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define WiFi_EN_Pin LL_GPIO_PIN_2
-#define WiFi_EN_GPIO_Port GPIOC
+#define WIFI_EN_Pin LL_GPIO_PIN_2
+#define WIFI_EN_GPIO_Port GPIOC
 #define KEYPADI1_Pin LL_GPIO_PIN_3
 #define KEYPADI1_GPIO_Port GPIOC
 #define KEYPADI2_Pin LL_GPIO_PIN_4
 #define KEYPADI2_GPIO_Port GPIOC
 #define KEYPADI3_Pin LL_GPIO_PIN_5
 #define KEYPADI3_GPIO_Port GPIOC
-#define INFLOW_BTN_Pin LL_GPIO_PIN_1
-#define INFLOW_BTN_GPIO_Port GPIOB
+#define DEBUG_7_Pin LL_GPIO_PIN_0
+#define DEBUG_7_GPIO_Port GPIOB
+#define DEBUG_8_Pin LL_GPIO_PIN_1
+#define DEBUG_8_GPIO_Port GPIOB
 #define OUTFLOW_BTN_Pin LL_GPIO_PIN_2
 #define OUTFLOW_BTN_GPIO_Port GPIOB
 #define KEYPADO0_Pin LL_GPIO_PIN_6
@@ -100,6 +102,8 @@ void Error_Handler(void);
 #define PROX_TRIG_GPIO_Port GPIOA
 #define PROX_MEAS_Pin LL_GPIO_PIN_11
 #define PROX_MEAS_GPIO_Port GPIOA
+#define WIFI_RST_Pin LL_GPIO_PIN_10
+#define WIFI_RST_GPIO_Port GPIOC
 #define STA_ID_0_Pin LL_GPIO_PIN_4
 #define STA_ID_0_GPIO_Port GPIOB
 #define STA_ID_1_Pin LL_GPIO_PIN_5
