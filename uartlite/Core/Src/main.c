@@ -237,7 +237,7 @@ int main(void)
 	//writestring("Bootup start!!\r\n", USART5);
 
 //  sonar_demo();
-//  sonar_display_distance();
+  sonar_display_distance();
 
 	esp_init_routine(&esp_handle);
 
