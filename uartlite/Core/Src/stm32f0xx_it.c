@@ -208,7 +208,6 @@ void USART3_8_IRQHandler(void)
 //		fifo_put(&usart5_rx_fifo, USART5->RDR);
 //	}
   /* USER CODE END USART3_8_IRQn 0 */
-
   /* USER CODE BEGIN USART3_8_IRQn 1 */
 	if (LL_USART_IsActiveFlag_RXNE(USART7)) {
 		fifo_put(&usart7_rx_fifo, USART7->RDR);
