@@ -57,7 +57,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define ESP_STA
+#define ESP_AP
 #define SWITCH_DIR_OUT 0
 #define SWITCH_DIR_IN 1
 
@@ -76,10 +76,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define WIFI_EN_Pin LL_GPIO_PIN_2
-#define WIFI_EN_GPIO_Port GPIOC
+#define KEYPADI0_Pin LL_GPIO_PIN_2
+#define KEYPADI0_GPIO_Port GPIOC
 #define KEYPADI1_Pin LL_GPIO_PIN_3
 #define KEYPADI1_GPIO_Port GPIOC
+#define WIFI_EN_Pin LL_GPIO_PIN_0
+#define WIFI_EN_GPIO_Port GPIOA
 #define KEYPADI2_Pin LL_GPIO_PIN_4
 #define KEYPADI2_GPIO_Port GPIOC
 #define KEYPADI3_Pin LL_GPIO_PIN_5
