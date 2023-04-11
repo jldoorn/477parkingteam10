@@ -185,9 +185,13 @@ int main(void)
 	uint8_t direction_switch_pos;
 
 	direction_switch_pos =
-			LL_GPIO_IsInputPinSet(STA_DIR_GPIO_Port, STA_DIR_Pin) ?
+			LL_GPIO_IsInputPinSet(USER_IN_SW1_GPIO_Port, USER_IN_SW1_Pin) ?
 					SWITCH_DIR_IN : SWITCH_DIR_OUT;
-//  	 station_id = ((LL_GPIO_ReadInputPort(STA_ID_0_GPIO_Port) & (STA_ID_0_Pin | STA_ID_1_Pin | STA_ID_2_Pin)) >> 4) + 2;
+  	 station_id = (LL_GPIO_IsInputPinSet(USER_IN_SW2_GPIO_Port, USER_IN_SW2_Pin) ? 0x4 : 0x0) |
+  			 (LL_GPIO_IsInputPinSet(USER_IN_SW3_GPIO_Port, USER_IN_SW3_Pin) ? 0x2 : 0x0) |
+			 (LL_GPIO_IsInputPinSet(USER_IN_SW4_GPIO_Port, USER_IN_SW4_Pin) ? 0x1 : 0x0);
+  	 sprintf(charbuff, "Station ID: %d, Dir: %d\r\n", station_id, direction_switch_pos);
+  	 writestring(charbuff, USART5);
 	station_id = 2;
 	int str_length = 0;
 //  	 NVIC_SetPriority(USART3_8_IRQn, 0);
@@ -839,12 +843,6 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(KEYPADO1_GPIO_Port, KEYPADO1_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(KEYPADO2_GPIO_Port, KEYPADO2_Pin);
-
-  /**/
-  LL_GPIO_ResetOutputPin(KEYPADO3_GPIO_Port, KEYPADO3_Pin);
-
-  /**/
   LL_GPIO_ResetOutputPin(PROX_TRIG_GPIO_Port, PROX_TRIG_Pin);
 
   /**/
@@ -915,20 +913,28 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(KEYPADO1_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = KEYPADO2_Pin;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pin = USER_IN_SW4_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(KEYPADO2_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(USER_IN_SW4_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = KEYPADO3_Pin;
-  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pin = USER_IN_SW3_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(KEYPADO3_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(USER_IN_SW3_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = USER_IN_SW2_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(USER_IN_SW2_GPIO_Port, &GPIO_InitStruct);
+
+  /**/
+  GPIO_InitStruct.Pin = USER_IN_SW1_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(USER_IN_SW1_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = PROX_TRIG_Pin;
