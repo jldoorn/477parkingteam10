@@ -279,16 +279,23 @@ int main(void)
 					case API_DIRECTION_IN:
 						num_spots--;
 						num_spots = num_spots < 0 ? 0 : num_spots;
+
+						spi_display1("                    ");
+						spi_display1("GOT INFLOW");
 						break;
 					case API_DIRECTION_OUT:
 						num_spots++;
+
+						spi_display1("                    ");
+						spi_display1("GOT OUTFLOW");
 						break;
 					default:
 						break;
 					}
-					//sprintf(charbuff, "%d", num_spots);
-					//spi_display2("                    ");
-					//spi_display2(charbuff);
+					sprintf(charbuff, "Num Spots: %d", num_spots);
+					spi_display2("                    ");
+					spi_display2(charbuff);
+
 					print_7segment_number(num_spots);
 				}
 
