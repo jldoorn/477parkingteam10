@@ -86,6 +86,25 @@ int __io_putchar(int c) {
 	return c;
 }
 
+void test_7segment(){
+//	write_7segment_bits(0x1010);
+	int num = 0;
+
+	while(1){
+
+//		print_7segment_number(num + (num * 10));
+
+//		num += 1;
+//		num %= 10;
+		write_7segment_bits( ( 1 << num) | (1 << (num + 8)));
+		num += 1;
+		num %= 8;
+		nano_wait(5000000000);
+//			print_7segment_number(00);
+//				nano_wait(5000000000);
+	}
+}
+
 void sonar_demo() {
 	sonar_init();
 	while (1) {
@@ -196,9 +215,9 @@ int main(void)
 	  LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
 
 //	LL_USART_EnableIT_RXNE(USART5);
-	LL_USART_EnableIT_RXNE(USART7);
+//	LL_USART_EnableIT_RXNE(USART7);
 //	pipe_wifi_to_debug();
-	LL_TIM_EnableIT_UPDATE(TIM7);
+//	LL_TIM_EnableIT_UPDATE(TIM7);
 //	LL_TIM_EnableIT_UPDATE(TIM6);
 
 	esp_handle_t esp_handle;
@@ -211,13 +230,16 @@ int main(void)
 	int sonar_read;
 
 #ifdef ESP_AP
+	spi_init_oled();
 	init_7segmentSPI2_shift();
 	print_7segment_number(0);
 	writestring("Initializing Number of Spots\r\n", USART5);
+	spi_display1("                    ");
+		spi_display1("Wrote spots");
+	test_7segment();
 	num_spots = get_num_spots();
 	print_7segment_number(num_spots);
-	spi_display1("                    ");
-	spi_display1("Wrote spots");
+
   	writestring("Startinig init routine\r\n", USART5);
   setup_esp(&esp_handle, "myap", "12345678", "192.168.0.1");
   writestring("Pick P for ping, A for ack, followed by <CR><LF>\r\n", USART5);

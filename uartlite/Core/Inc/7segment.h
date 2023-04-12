@@ -19,5 +19,6 @@ void enable_7segmentDMA(void);
 void init_7segmentSPI2(void);
 void init_7segmentSPI2_shift(void);
 void print_7segment_number(int count);
+void write_7segment_bits(uint16_t val);
 
 #endif /* INC_7SEGMENT_H_ */
