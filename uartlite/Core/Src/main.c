@@ -234,9 +234,9 @@ int main(void)
 	init_7segmentSPI2_shift();
 	print_7segment_number(0);
 	writestring("Initializing Number of Spots\r\n", USART5);
-	spi_display1("                    ");
-		spi_display1("Wrote spots");
-	test_7segment();
+//	spi_display1("                    ");
+//		spi_display1("Wrote spots");
+//	test_7segment();
 	num_spots = get_num_spots();
 	print_7segment_number(num_spots);
 
