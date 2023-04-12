@@ -301,7 +301,8 @@ int main(void)
 
 				break;
 			case ESP_DISCONNECT:
-
+				LL_GPIO_ResetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
+				  LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
 				esp_init_routine(&esp_handle);
 
 				break;
@@ -860,7 +861,7 @@ static void MX_GPIO_Init(void)
   /**/
   GPIO_InitStruct.Pin = KEYPADI0_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_DOWN;
   LL_GPIO_Init(KEYPADI0_GPIO_Port, &GPIO_InitStruct);
 
   /**/
