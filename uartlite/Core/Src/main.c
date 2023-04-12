@@ -203,7 +203,6 @@ int main(void)
 	LL_USART_EnableIT_RXNE(USART7);
 //	pipe_wifi_to_debug();
 	LL_TIM_EnableIT_UPDATE(TIM7);
-//	LL_TIM_EnableIT_UPDATE(TIM6);
 
 	esp_handle_t esp_handle;
 	esp_handle.debug = USART5;
@@ -241,7 +240,7 @@ int main(void)
 	//writestring("Bootup start!!\r\n", USART5);
 
 //  sonar_demo();
-  sonar_display_distance();
+//  sonar_display_distance();
 
 	esp_init_routine(&esp_handle);
 
@@ -251,7 +250,7 @@ int main(void)
 	espmsg->module_id = 2;
 	espmsg->command = API_PING;
 	esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-	//writestring("Main: sent ping\r\n", USART5);
+	writestring("Main: sent ping\r\n", USART5);
 	//writestring(
 	//		"Pick P for ping, I for inflow, O for outflow, followed by <CR><LF>\r\n",
 	//		USART5);
@@ -318,8 +317,8 @@ int main(void)
 		if (trigger_measurement_event) {
 
 			sonar_read = sonar();
-			//sprintf(charbuff, "Sonar triggered, dist: %d\r\n", sonar_read);
-			//writestring(charbuff, USART5);
+			sprintf(charbuff, "Sonar triggered, dist: %d\r\n", sonar_read);
+			writestring(charbuff, USART5);
 			trigger_measurement_event = 0;
 		}
 
@@ -354,7 +353,7 @@ int main(void)
 		if (read_trigger_val() == SONAR_TRIGGERED) {
 			espmsg->module_id = station_id;
 			espmsg->command = API_CAR_DETECT;
-			espmsg->body.direction = API_DIRECTION_IN;
+			espmsg->body.direction = direction_switch_pos == SWITCH_DIR_IN ? API_DIRECTION_IN : API_DIRECTION_OUT;
 			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 			writestring("Main: sent inflow\r\n", USART5);
 			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)

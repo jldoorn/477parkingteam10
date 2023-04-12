@@ -90,7 +90,7 @@ uint16_t sonar(void) {
 	LL_GPIO_ResetOutputPin(DEBUG_8_GPIO_Port, DEBUG_8_Pin);
 
 	us_count = LL_TIM_GetCounter(TIM2);
-	debounce_state.buffer[debounce_state.buffer_idx++] = us_count / 14;
+	debounce_state.buffer[debounce_state.buffer_idx++] = us_count / 148;
 	debounce_state.buffer_idx %= SONAR_DEBOUNCE_WIDTH;
 
 	debounce();
