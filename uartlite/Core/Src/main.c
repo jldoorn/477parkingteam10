@@ -126,7 +126,7 @@ void pipe_wifi_to_debug() {
 	LL_GPIO_ResetOutputPin(DEBUG_7_GPIO_Port, DEBUG_7_Pin);
 	LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
 	LL_GPIO_SetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
-	writestring("Testing 123\r\n", USART7);
+	writestring("Testing 123\r\n", USART5);
 	while(1) {
 		if (USART5->ISR & USART_ISR_RXNE) {
 			c = USART5->RDR;
