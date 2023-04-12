@@ -92,13 +92,13 @@ void test_7segment(){
 
 	while(1){
 
-//		print_7segment_number(num + (num * 10));
+		print_7segment_number(num + (num * 10));
 
-//		num += 1;
-//		num %= 10;
-		write_7segment_bits( ( 1 << num) | (1 << (num + 8)));
 		num += 1;
-		num %= 8;
+		num %= 10;
+//		write_7segment_bits( ( 1 << num) | (1 << (num + 8)));
+//		num += 1;
+//		num %= 8;
 		nano_wait(5000000000);
 //			print_7segment_number(00);
 //				nano_wait(5000000000);
