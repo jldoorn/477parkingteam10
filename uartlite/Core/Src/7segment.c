@@ -20,22 +20,29 @@ uint16_t msg[8] = { 0x0000,0x0100,0x0200,0x0300,0x0400,0x0500,0x0600,0x0700 };
  * 		SSE is active low.
  */
 
-void print_7segment_number(int count) {
-	uint16_t toWrite = 0;
+void write_7segment_bits(uint16_t val) {
 	GPIOB->BRR = 1 << SEVSEG_NEN_PIN;
 	GPIOB->BSRR = 1 << 12 ; // nss high
+
+	SPI2->DR = ~val;
+		while (SPI2->SR & SPI_SR_BSY);
+		nano_wait(15000);
+		GPIOB->BRR = 1 << 12; // nss low
+		GPIOB->BSRR = 1 << SEVSEG_NEN_PIN;
+}
+
+void print_7segment_number(int count) {
+	uint16_t toWrite = 0;
+
 	if (count > 100) {
 		count = 99;
 	}
 
 	toWrite |= font[(count / 10) + '0'] << 8;
 	toWrite |= font[(count % 10 ) + '0'];
+	write_7segment_bits(toWrite);
 //	while ( ~ (SPI2->SR & SPI_SR_BSY));
-	SPI2->DR = ~toWrite;
-	while (SPI2->SR & SPI_SR_BSY);
-	nano_wait(15000);
-	GPIOB->BRR = 1 << 12; // nss low
-	GPIOB->BSRR = 1 << SEVSEG_NEN_PIN;
+
 
 }
 
