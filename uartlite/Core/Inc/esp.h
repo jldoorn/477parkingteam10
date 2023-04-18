@@ -42,8 +42,8 @@ typedef struct {
 int setup_esp(esp_handle_t * esp, char * ssid, char * pwd, char * gateway_ip);
 esp_response_enum esp_debug_response(esp_handle_t * esp);
 void esp_send_data(char * buf, int n, esp_handle_t * esp, int multi) ;
-void esp_setup_join(char * ssid, char * pw, esp_handle_t * esp) ;
-void esp_init_udp_station(char * ip_conn, int port, esp_handle_t * esp);
+void esp_setup_join(char * ssid, char * pw, esp_handle_t * esp, char * static_ip) ;
+void esp_init_udp_station(char * ip_conn, int port, esp_handle_t * esp, int conn_id);
 extern esp_data_incoming_t esp_incoming;
 //void esp_disable_echo();
 //int esp_check_status(fifo_t * fifo);

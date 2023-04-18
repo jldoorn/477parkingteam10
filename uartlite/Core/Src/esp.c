@@ -133,7 +133,12 @@ void esp_join_ap(USART_TypeDef *usartx, char *ssid, char *pw) {
 	writestring(esp_buffer, usartx);
 }
 
-void esp_setup_join(char *ssid, char *pw, esp_handle_t *esp) {
+void esp_sta_set_ip(USART_TypeDef *usartx, char * ip_addr) {
+	sprintf(esp_buffer, "AT+CIPSTA=\"%s\"\r\n", ip_addr);
+	writestring(esp_buffer, usartx);
+}
+
+void esp_setup_join(char *ssid, char *pw, esp_handle_t *esp, char * static_ip) {
 	flush_fifo_to_usart(esp->fifo, esp->debug);
 	esp_reset(esp->usartx);
 	while (esp_debug_response(esp) != ESP_READY)
@@ -149,22 +154,41 @@ void esp_setup_join(char *ssid, char *pw, esp_handle_t *esp) {
 	esp_join_ap(esp->usartx, ssid, pw);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
+	esp_sta_set_ip(esp->usartx, static_ip);
+	while (esp_debug_response(esp) != ESP_OK)
+			;
 }
+
+void esp_ap_set_ip(USART_TypeDef *usartx, char * ip_addr) {
+	sprintf(esp_buffer, "AT+CIPAP=\"%s\",\"%s\",\"255.255.255.0\"\r\n", ip_addr, ip_addr);
+	writestring(esp_buffer, usartx);
+}
+
+
+
 
 void esp_udp_single_conn(USART_TypeDef *usartx, char *ip_conn, int port) {
 	sprintf(esp_buffer, "AT+CIPSTART=\"UDP\",\"%s\",%d\r\n", ip_conn, port);
 	writestring(esp_buffer, usartx);
 }
 
-void esp_init_udp_station(char *ip_conn, int port, esp_handle_t *esp) {
-	esp_multiplex_set(esp->usartx, ESP_MUX_SINGLE);
+void esp_udp_multi_conn(USART_TypeDef *usartx, char * ip_conn, int port, int conn_id) {
+	sprintf(esp_buffer, "AT+CIPSTART=%d,\"UDP\",\"%s\",%d\r\n",conn_id, ip_conn, port);
+	writestring(esp_buffer, usartx);
+}
+
+void esp_init_udp_station(char *ip_conn, int port, esp_handle_t *esp, int conn_id) {
+	esp_multiplex_set(esp->usartx, ESP_MUX_MULTI);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
 
-	esp_udp_single_conn(esp->usartx, ip_conn, port);
+	esp_udp_multi_conn(esp->usartx, ip_conn, port, conn_id);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
 }
+
+// may need to do UDP mux for station...
+
 
 /**
  * Blocks on the ESP module until new content received, then decodes the type of

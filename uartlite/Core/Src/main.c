@@ -112,10 +112,10 @@ void sonar_display_distance() {
 	}
 }
 
-void esp_init_routine(esp_handle_t *esp_handle) {
+void esp_init_routine(esp_handle_t *esp_handle, int sta_id) {
 	esp_setup_join("myap", "12345678", esp_handle);
 		writestring("Connect success!!\r\n", USART5);
-
+		sprintf(charbuff, "192.168.0.%d", sta_id+2);
 		esp_init_udp_station("192.168.0.1", 8080, esp_handle);
 }
 
@@ -126,7 +126,7 @@ void pipe_wifi_to_debug() {
 	LL_GPIO_ResetOutputPin(DEBUG_7_GPIO_Port, DEBUG_7_Pin);
 	LL_GPIO_SetOutputPin(WIFI_EN_GPIO_Port, WIFI_EN_Pin);
 	LL_GPIO_SetOutputPin(WIFI_RST_GPIO_Port, WIFI_RST_Pin);
-	writestring("Testing 123\r\n", USART7);
+	writestring("Testing 123\r\n", USART5);
 	while(1) {
 		if (USART5->ISR & USART_ISR_RXNE) {
 			c = USART5->RDR;
@@ -184,6 +184,12 @@ int main(void)
 	uint8_t station_id;
 	uint8_t direction_switch_pos;
 
+	esp_handle_t esp_handle;
+		esp_handle.debug = USART5;
+		esp_handle.fifo = &usart7_rx_fifo;
+		esp_handle.usartx = USART7;
+		message_t *espmsg;
+
 	direction_switch_pos =
 			LL_GPIO_IsInputPinSet(USER_IN_SW1_GPIO_Port, USER_IN_SW1_Pin) ?
 					SWITCH_DIR_IN : SWITCH_DIR_OUT;
@@ -201,14 +207,14 @@ int main(void)
 
 //	LL_USART_EnableIT_RXNE(USART5);
 	LL_USART_EnableIT_RXNE(USART7);
+//
+//	setup_esp(&esp_handle, "myap", "12345678", "192.168.0.1");
+//	LL_USART_DisableIT_RXNE(USART7);
 //	pipe_wifi_to_debug();
+
 	LL_TIM_EnableIT_UPDATE(TIM7);
 
-	esp_handle_t esp_handle;
-	esp_handle.debug = USART5;
-	esp_handle.fifo = &usart7_rx_fifo;
-	esp_handle.usartx = USART7;
-	message_t *espmsg;
+
 
 	int num_spots;
 	int sonar_read;
