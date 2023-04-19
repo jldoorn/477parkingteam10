@@ -184,6 +184,8 @@ int main(void)
 	uint8_t station_id;
 	uint8_t direction_switch_pos;
 
+	LL_GPIO_ResetOutputPin(LED2_GPIO_Port, LED2_Pin);
+
 	direction_switch_pos =
 			LL_GPIO_IsInputPinSet(USER_IN_SW1_GPIO_Port, USER_IN_SW1_Pin) ?
 					SWITCH_DIR_IN : SWITCH_DIR_OUT;
@@ -213,53 +215,16 @@ int main(void)
 	int num_spots;
 	int sonar_read;
 
-#ifdef ESP_AP
-	init_7segmentSPI2_shift();
-	print_7segment_number(0);
-	writestring("Initializing Number of Spots\r\n", USART5);
-	num_spots = get_num_spots();
-	print_7segment_number(num_spots);
-	spi_display1("                    ");
-	spi_display1("Wrote spots");
-  	writestring("Startinig init routine\r\n", USART5);
-  setup_esp(&esp_handle, "myap", "12345678", "192.168.0.1");
-  writestring("Pick P for ping, A for ack, followed by <CR><LF>\r\n", USART5);
-#endif
-
-#ifdef ESP_STA
-
-//  while (1) {
-//
-//  		sprintf(charbuff, "Got distance: %d\r\n", sonar());
-//  		writestring(charbuff, USART5);
-//  		nano_wait(100000000);
-//  	}
-	//spi_init_oled();
-	//spi_display1("Hello world");
-//  spi_display2("Distance: ");
-	//writestring("Bootup start!!\r\n", USART5);
-
-//  sonar_demo();
-//  sonar_display_distance();
-
 	esp_init_routine(&esp_handle);
-
-	//spi_display1("                    ");
-	//spi_display1("Wifi Connected");
+	LL_GPIO_SetOutputPin(LED2_GPIO_Port, LED2_Pin); // Wifi Connected!
 	espmsg = get_message();
 	espmsg->module_id = 2;
 	espmsg->command = API_PING;
 	esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
 	writestring("Main: sent ping\r\n", USART5);
-	//writestring(
-	//		"Pick P for ping, I for inflow, O for outflow, followed by <CR><LF>\r\n",
-	//		USART5);
+
 	sonar_init();
-	//spi_display2("not triggered");
-//    esp_send_data("Hello World\r\n", strlen("Hello World\r\n"),  &esp_handle, 0);
-//    while (esp_debug_response( &esp_handle) != ESP_SEND_OK);
-//    writestring("Send success!!\r\n", USART5);
-#endif
+
 
   /* USER CODE END 2 */
 
@@ -271,13 +236,10 @@ int main(void)
 			switch (esp_debug_response(&esp_handle)) {
 			case ESP_DATA:
 				espmsg = (message_t*) esp_incoming.buffer;
-				//writestring("Main: Got ESP Data\r\n", USART5);
-				//debug_message(espmsg, charbuff);
-				//writestring(charbuff, USART5);
+
 
 				if (espmsg->command == API_CAR_DETECT) {
-					//spi_display1("                    ");
-					//spi_display1("Detected Flow");
+
 					switch (espmsg->body.direction) {
 					case API_DIRECTION_IN:
 						num_spots--;
@@ -289,9 +251,7 @@ int main(void)
 					default:
 						break;
 					}
-					//sprintf(charbuff, "%d", num_spots);
-					//spi_display2("                    ");
-					//spi_display2(charbuff);
+
 					print_7segment_number(num_spots);
 				}
 
@@ -305,15 +265,11 @@ int main(void)
 				break;
 			}
 
-//		  usart_write_n(esp_incoming.buffer, esp_incoming.count, USART5);
-//		  esp_send_data(esp_incoming.buffer, esp_incoming.count, USART7, &usart7_rx_fifo, USART5);
-//		  while (esp_debug_response(&usart7_rx_fifo, USART5) != ESP_SEND_OK);
 		}
 
-#ifdef ESP_STA
 
-//		sprintf(charbuff, "Distance: %d", sonar());
-//		spi_display2(charbuff);
+
+
 		if (trigger_measurement_event) {
 
 			sonar_read = sonar();
@@ -322,34 +278,7 @@ int main(void)
 			trigger_measurement_event = 0;
 		}
 
-//		if (!LL_GPIO_IsInputPinSet(INFLOW_BTN_GPIO_Port, INFLOW_BTN_Pin)) {
-//
-//			// inflow
-//			espmsg->module_id = station_id;
-//			espmsg->command = API_CAR_DETECT;
-//			espmsg->body.direction = API_DIRECTION_IN;
-//			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-//			writestring("Main: sent inflow\r\n", USART5);
-//			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
-//				;
-//			writestring("Send success!!\r\n", USART5);
-//			spi_display1("                    ");
-//			spi_display1("Sent Inflow");
-//		}
-//		if (!LL_GPIO_IsInputPinSet(OUTFLOW_BTN_GPIO_Port, OUTFLOW_BTN_Pin)) {
-//
-//			// outflow
-//			espmsg->module_id = station_id;
-//			espmsg->command = API_CAR_DETECT;
-//			espmsg->body.direction = API_DIRECTION_OUT;
-//			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
-//			writestring("Main: sent outflow\r\n", USART5);
-//			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
-//				;
-//			writestring("Send success!!\r\n", USART5);
-//			spi_display1("                    ");
-//			spi_display1("Sent Outflow");
-//		}
+
 		if (read_trigger_val() == SONAR_TRIGGERED) {
 			espmsg->module_id = station_id;
 			espmsg->command = API_CAR_DETECT;
@@ -363,33 +292,11 @@ int main(void)
 			spi_display1("Sent Inflow");
 		}
 
-#endif
 
 		if (!fifo_empty(&usart5_rx_fifo)) {
 			// got a line to send
 			str_length = fifo_read_until(&usart5_rx_fifo, charbuff, '\n', 1024);
-#ifdef ESP_AP
 
-		  switch (charbuff[0]) {
-			case 'P':
-				espmsg->module_id = 1;
-				  espmsg->command = API_PING;
-				  esp_send_data((char * ) espmsg, sizeof(espmsg), &esp_handle, 1);
-				  writestring("Main: sent ping\r\n", USART5);
-				break;
-			case 'A':
-				espmsg->module_id = 1;
-				  espmsg->command = API_ACK;
-				  esp_send_data((char * ) espmsg, sizeof(espmsg), &esp_handle, 1);
-				  writestring("Main: sent Ack\r\n", USART5);
-				break;
-			default:
-				writestring("Main: got odd input\r\n", USART5);
-				break;
-		}
-
-#endif
-#ifdef ESP_STA
 			espmsg = get_message();
 			switch (charbuff[0]) {
 			case 'P':
@@ -430,7 +337,6 @@ int main(void)
 				break;
 			}
 
-#endif
 
 		}
     /* USER CODE END WHILE */
@@ -836,7 +742,7 @@ static void MX_GPIO_Init(void)
   LL_GPIO_ResetOutputPin(DEBUG_8_GPIO_Port, DEBUG_8_Pin);
 
   /**/
-  LL_GPIO_ResetOutputPin(KEYPADO0_GPIO_Port, KEYPADO0_Pin);
+  LL_GPIO_ResetOutputPin(LED2_GPIO_Port, LED2_Pin);
 
   /**/
   LL_GPIO_ResetOutputPin(KEYPADO1_GPIO_Port, KEYPADO1_Pin);
@@ -896,12 +802,12 @@ static void MX_GPIO_Init(void)
   LL_GPIO_Init(OUTFLOW_BTN_GPIO_Port, &GPIO_InitStruct);
 
   /**/
-  GPIO_InitStruct.Pin = KEYPADO0_Pin;
+  GPIO_InitStruct.Pin = LED2_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
-  LL_GPIO_Init(KEYPADO0_GPIO_Port, &GPIO_InitStruct);
+  LL_GPIO_Init(LED2_GPIO_Port, &GPIO_InitStruct);
 
   /**/
   GPIO_InitStruct.Pin = KEYPADO1_Pin;

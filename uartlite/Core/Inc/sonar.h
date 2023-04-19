@@ -11,8 +11,8 @@
 
 #define SONAR_DEBOUNCE_WIDTH 10
 
-#define SONAR_THRESH_TRIG 5
-#define SONAR_THRESH_CLEAR 15
+#define SONAR_THRESH_TRIG 50
+#define SONAR_THRESH_CLEAR 80
 #define SONAR_TRIGGERED 1
 
 typedef struct {

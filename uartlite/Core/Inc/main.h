@@ -90,8 +90,8 @@ void Error_Handler(void);
 #define DEBUG_8_GPIO_Port GPIOB
 #define OUTFLOW_BTN_Pin LL_GPIO_PIN_2
 #define OUTFLOW_BTN_GPIO_Port GPIOB
-#define KEYPADO0_Pin LL_GPIO_PIN_6
-#define KEYPADO0_GPIO_Port GPIOC
+#define LED2_Pin LL_GPIO_PIN_6
+#define LED2_GPIO_Port GPIOC
 #define KEYPADO1_Pin LL_GPIO_PIN_7
 #define KEYPADO1_GPIO_Port GPIOC
 #define USER_IN_SW4_Pin LL_GPIO_PIN_8
