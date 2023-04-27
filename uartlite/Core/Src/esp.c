@@ -55,8 +55,8 @@ void esp_multiplex_set(USART_TypeDef *usartx, int mux_mode) {
 	writestring(esp_buffer, usartx);
 }
 
-void esp_listen_incoming_udp(int port, USART_TypeDef *usartx) {
-	sprintf(esp_buffer, "AT+CIPSTART=0,\"UDP\",\"0.0.0.0\",%d,%d,2\r\n", port,
+void esp_listen_incoming_udp(int port, USART_TypeDef *usartx, int link_id) {
+	sprintf(esp_buffer, "AT+CIPSTART=%d,\"UDP\",\"0.0.0.0\",%d,%d,2\r\n",link_id, port,
 			port);
 	writestring(esp_buffer, usartx);
 }
@@ -86,7 +86,7 @@ void esp_gateway_ip_set(char *gateway_ip, USART_TypeDef *usartx) {
 }
 
 /**
- * Configures the ESP in station mode and opens port to receive UDP packets
+ * Configures the ESP in Access point mode and opens port to receive UDP packets
  *
  * @param fifo a pointer to the fifo that is filled from the interrupt handling the RX from the ESP
  * @param usartx a pointer to the USART that the ESP is attached to
@@ -120,7 +120,7 @@ int setup_esp(esp_handle_t *esp, char *ssid, char *pwd, char *gateway_ip) {
 	while (esp_debug_response(esp) != ESP_OK)
 		;
 
-	esp_listen_incoming_udp(8080, esp->usartx);
+	esp_listen_incoming_udp(8080, esp->usartx, 0);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
 
@@ -128,16 +128,21 @@ int setup_esp(esp_handle_t *esp, char *ssid, char *pwd, char *gateway_ip) {
 	return 0;
 }
 
+
+// Join an existing access point
 void esp_join_ap(USART_TypeDef *usartx, char *ssid, char *pw) {
 	sprintf(esp_buffer, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, pw);
 	writestring(esp_buffer, usartx);
 }
 
+// set ip address (static) for a wifi station
+// IP a string, must be in the format "%d.%d.%d.%d"
 void esp_sta_set_ip(USART_TypeDef *usartx, char * ip_addr) {
 	sprintf(esp_buffer, "AT+CIPSTA=\"%s\"\r\n", ip_addr);
 	writestring(esp_buffer, usartx);
 }
 
+// Example of how to initialize station, connect to a network, and set a static ip
 void esp_setup_join(char *ssid, char *pw, esp_handle_t *esp, char * static_ip) {
 	flush_fifo_to_usart(esp->fifo, esp->debug);
 	esp_reset(esp->usartx);
@@ -177,7 +182,12 @@ void esp_udp_multi_conn(USART_TypeDef *usartx, char * ip_conn, int port, int con
 	writestring(esp_buffer, usartx);
 }
 
+// Sets an ESP to multiplex udp connections, then connects to an UDP socket at ipconn, port
+// conn_id will be used for sending data. There can be four simultaneous connections, id 0, 1, 2, 3
 void esp_init_udp_station(char *ip_conn, int port, esp_handle_t *esp, int conn_id) {
+	if (conn_id > 3 || conn_id < 0) {
+		writestring("Error,  conn_id must be in range [0,3]\r\n", esp->debug);
+	}
 	esp_multiplex_set(esp->usartx, ESP_MUX_MULTI);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
@@ -191,6 +201,12 @@ void esp_new_udp_station(char *ip_conn, int port, esp_handle_t *esp, int conn_id
 	esp_udp_multi_conn(esp->usartx, ip_conn, port, conn_id);
 	while (esp_debug_response(esp) != ESP_OK)
 		;
+}
+
+void esp_new_udp_listen(int port, esp_handle_t *esp, int conn_id) {
+	esp_listen_incoming_udp(port, esp->usartx, conn_id);
+	while (esp_debug_response(esp) != ESP_OK)
+			;
 }
 
 // may need to do UDP mux for station...

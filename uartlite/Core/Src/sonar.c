@@ -39,6 +39,10 @@ uint8_t read_trigger_val() {
 	return !SONAR_TRIGGERED;
 }
 
+uint8_t peek_trigger_val() {
+	return debounce_state.triggered;
+}
+
 void debounce() {
 	int i;
 
