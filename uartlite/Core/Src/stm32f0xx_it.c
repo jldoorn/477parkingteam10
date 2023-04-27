@@ -199,6 +199,21 @@ void TIM7_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM14 global interrupt.
+  */
+void TIM14_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM14_IRQn 0 */
+	TIM14->SR &= ~TIM_SR_UIF;
+	timeout_tenth_second_counter += 1;
+
+  /* USER CODE END TIM14_IRQn 0 */
+  /* USER CODE BEGIN TIM14_IRQn 1 */
+
+  /* USER CODE END TIM14_IRQn 1 */
+}
+
+/**
   * @brief This function handles USART3 to USART8 global interrupts / USART3 wake-up interrupt through EXTI line 28.
   */
 void USART3_8_IRQHandler(void)
