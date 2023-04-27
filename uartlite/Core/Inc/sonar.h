@@ -24,9 +24,11 @@ typedef struct {
 } sonar_debouncer_t;
 
 volatile extern uint8_t trigger_measurement_event;
+volatile extern uint16_t timeout_tenth_second_counter;
 
 uint16_t sonar(void);
 uint8_t read_trigger_val();
+uint8_t peek_trigger_val();
 void sonar_init();
 
 

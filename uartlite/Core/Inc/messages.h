@@ -14,9 +14,13 @@
 #define API_ACK				2
 #define API_CAR_DETECT		3
 #define API_DISTANCE_SEND	4
+#define API_SISTER_TRIGGER  5
 
 #define API_DIRECTION_IN	0
 #define API_DIRECTION_OUT	1
+
+#define API_PLACEMENT_FRONT	0
+#define API_PLACEMENT_REAR	1
 
 
 typedef struct {
@@ -25,6 +29,7 @@ typedef struct {
 	union {
 		uint8_t direction;
 		uint8_t distance;
+		uint8_t placement;
 	} body;
 
 } message_t;

@@ -61,6 +61,13 @@ extern "C" {
 #define SWITCH_DIR_OUT 0
 #define SWITCH_DIR_IN 1
 
+#define PTS_AM_UDP_LINK 0
+#define PTS_SISTER_UDP_LINK 1
+#define PTS_SISTER_UDP_PORT 5000
+
+// 10 second delay
+#define MAX_DELAY_SISTER_TRIGGER 100
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
