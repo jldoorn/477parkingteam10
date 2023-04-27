@@ -113,10 +113,11 @@ void sonar_display_distance() {
 }
 
 void esp_init_routine(esp_handle_t *esp_handle, int sta_id) {
-	esp_setup_join("myap", "12345678", esp_handle);
+	sprintf(charbuff, "192.168.0.%d", sta_id+2);
+	esp_setup_join("myap", "12345678", esp_handle, charbuff);
 		writestring("Connect success!!\r\n", USART5);
-		sprintf(charbuff, "192.168.0.%d", sta_id+2);
-		esp_init_udp_station("192.168.0.1", 8080, esp_handle);
+
+		esp_init_udp_station("192.168.0.1", 8080, esp_handle, PTS_AM_UDP_LINK);
 }
 
 void pipe_wifi_to_debug() {
@@ -219,18 +220,6 @@ int main(void)
 	int num_spots;
 	int sonar_read;
 
-#ifdef ESP_AP
-	init_7segmentSPI2_shift();
-	print_7segment_number(0);
-	writestring("Initializing Number of Spots\r\n", USART5);
-	num_spots = get_num_spots();
-	print_7segment_number(num_spots);
-	spi_display1("                    ");
-	spi_display1("Wrote spots");
-  	writestring("Startinig init routine\r\n", USART5);
-  setup_esp(&esp_handle, "myap", "12345678", "192.168.0.1");
-  writestring("Pick P for ping, A for ack, followed by <CR><LF>\r\n", USART5);
-#endif
 
 #ifdef ESP_STA
 
@@ -248,14 +237,14 @@ int main(void)
 //  sonar_demo();
 //  sonar_display_distance();
 
-	esp_init_routine(&esp_handle);
+	esp_init_routine(&esp_handle, 0);
 
 	//spi_display1("                    ");
 	//spi_display1("Wifi Connected");
 	espmsg = get_message();
 	espmsg->module_id = 2;
 	espmsg->command = API_PING;
-	esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+	esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, PTS_AM_UDP_LINK);
 	writestring("Main: sent ping\r\n", USART5);
 	//writestring(
 	//		"Pick P for ping, I for inflow, O for outflow, followed by <CR><LF>\r\n",
@@ -304,7 +293,7 @@ int main(void)
 				break;
 			case ESP_DISCONNECT:
 
-				esp_init_routine(&esp_handle);
+				esp_init_routine(&esp_handle,0);
 
 				break;
 			default:
@@ -360,7 +349,7 @@ int main(void)
 			espmsg->module_id = station_id;
 			espmsg->command = API_CAR_DETECT;
 			espmsg->body.direction = direction_switch_pos == SWITCH_DIR_IN ? API_DIRECTION_IN : API_DIRECTION_OUT;
-			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, 0);
+			esp_send_data((char*) espmsg, sizeof(espmsg), &esp_handle, PTS_AM_UDP_LINK);
 			writestring("Main: sent inflow\r\n", USART5);
 			while (esp_debug_response(&esp_handle) != ESP_SEND_OK)
 				;

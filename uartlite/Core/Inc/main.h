@@ -61,6 +61,11 @@ extern "C" {
 #define SWITCH_DIR_OUT 0
 #define SWITCH_DIR_IN 1
 
+#define PTS_AM_UDP_LINK 0
+#define PTS_SISTER_UDP_SEND_LINK 1
+#define PTS_SISTER_UDP_LISTEN_LINK 2
+#define PTS_SISTER_UDP_PORT 5000
+
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

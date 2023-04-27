@@ -62,8 +62,8 @@ void esp_listen_incoming_udp(int port, USART_TypeDef *usartx) {
 }
 
 // Gets modem to point of
-void esp_send_mux_init(int count, USART_TypeDef *usartx) {
-	sprintf(esp_buffer, "AT+CIPSEND=0,%d\r\n", count);
+void esp_send_mux_init(int count, USART_TypeDef *usartx, int link_id) {
+	sprintf(esp_buffer, "AT+CIPSEND=%d,%d\r\n", link_id, count);
 	writestring(esp_buffer, usartx);
 }
 
@@ -187,6 +187,12 @@ void esp_init_udp_station(char *ip_conn, int port, esp_handle_t *esp, int conn_i
 		;
 }
 
+void esp_new_udp_station(char *ip_conn, int port, esp_handle_t *esp, int conn_id) {
+	esp_udp_multi_conn(esp->usartx, ip_conn, port, conn_id);
+	while (esp_debug_response(esp) != ESP_OK)
+		;
+}
+
 // may need to do UDP mux for station...
 
 
@@ -212,17 +218,17 @@ esp_response_enum esp_debug_response(esp_handle_t *esp) {
 		usart_write_n(debug_buffer, buffer_offset % 1024, esp->debug);
 		if (strnstr(debug_buffer, "+IPD", 100)) {
 
-#ifdef ESP_STA
-			sscanf(debug_buffer, "+IPD,%d:",&ipd_data_count);
-						sprintf(esp_buffer, "Packet in on station with length %d\r\n",
-								ipd_data_count);
-#endif
+//#ifdef ESP_STA
+//			sscanf(debug_buffer, "+IPD,%d:",&ipd_data_count);
+//						sprintf(esp_buffer, "Packet in on station with length %d\r\n",
+//								ipd_data_count);
+//#endif
 
-#ifdef ESP_AP
+//#ifdef ESP_AP
 			sscanf(debug_buffer, "+IPD,%d,%d:", &link_id, &ipd_data_count);
 			sprintf(esp_buffer, "Packet in on AP with length %d\r\n",
 					ipd_data_count);
-#endif
+//#endif
 
 			writestring(esp_buffer, esp->debug);
 			writestring("Incoming packet data>", esp->debug);
@@ -235,6 +241,7 @@ esp_response_enum esp_debug_response(esp_handle_t *esp) {
 				ipd_data_count -= (ipd_data_count % 1024);
 			}
 			writestring("<End of packet data\r\n", esp->debug);
+			esp_incoming.link_id = link_id;
 			return ESP_DATA;
 		} else {
 
@@ -275,14 +282,11 @@ esp_response_enum esp_debug_response(esp_handle_t *esp) {
 	return ESP_STATUS;
 }
 
-void esp_send_data(char *buf, int n, esp_handle_t *esp, int multi) {
+void esp_send_data(char *buf, int n, esp_handle_t *esp, int link_id) {
 	char tmp = 0;
 
-	if (multi) {
-		esp_send_mux_init(n, esp->usartx);
-	} else {
-		esp_send_simple_init(n, esp->usartx);
-	}
+		esp_send_mux_init(n, esp->usartx, link_id);
+
 	while (tmp != '>') {
 		while (!fifo_empty(esp->fifo)) {
 			fifo_pop(esp->fifo, &tmp);

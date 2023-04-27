@@ -24,6 +24,7 @@ typedef enum {ESP_STATUS, ESP_DATA, ESP_RESULTS, ESP_READY, ESP_PARSE_FAIL, ESP_
 typedef struct {
 	int count;
 	char buffer[UDP_BUF_SIZE];
+	int link_id;
 } esp_data_incoming_t;
 
 typedef struct {
@@ -44,6 +45,7 @@ esp_response_enum esp_debug_response(esp_handle_t * esp);
 void esp_send_data(char * buf, int n, esp_handle_t * esp, int multi) ;
 void esp_setup_join(char * ssid, char * pw, esp_handle_t * esp, char * static_ip) ;
 void esp_init_udp_station(char * ip_conn, int port, esp_handle_t * esp, int conn_id);
+void esp_new_udp_station(char *ip_conn, int port, esp_handle_t *esp, int conn_id);
 extern esp_data_incoming_t esp_incoming;
 //void esp_disable_echo();
 //int esp_check_status(fifo_t * fifo);
