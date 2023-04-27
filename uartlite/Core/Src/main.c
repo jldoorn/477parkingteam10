@@ -212,7 +212,8 @@ int main(void) {
 	sprintf(charbuff, "Station ID: %d, Dir: %d\r\n", station_id,
 			direction_switch_pos);
 	writestring(charbuff, USART5);
-	station_id = 2;
+	station_id = 0;
+	direction_switch_pos = 0;
 	int str_length = 0;
 //  	 NVIC_SetPriority(USART3_8_IRQn, 0);
 //  	 NVIC_SetPriority(TIM7_IRQn, 1);
